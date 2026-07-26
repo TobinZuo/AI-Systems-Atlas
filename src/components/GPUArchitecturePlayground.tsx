@@ -381,8 +381,8 @@ export function GPUArchitecturePlayground() {
       </section>
 
       <section className="gpu-next-connection" aria-labelledby="gpu-next-title">
-        <div><span>进入异步执行</span><h3 id="gpu-next-title">这个 kernel 写完梯度，通信才可以安全读取</h3><p>Backward kernel 把 parameter.grad 写入 HBM。下一步观察 DDP hook 怎样把 NCCL collective 提交到 Comm Stream，并用 Event 保证数据就绪。</p></div>
-        <a href="#/gpu/cuda-stream">进入 CUDA Stream</a>
+        <div><span>返回软件调用链</span><h3 id="gpu-next-title">Grid、Block 和 Warp 从哪里来</h3><p>Python 不会直接操作 SM。下一步沿 Tensor operator、PyTorch Dispatcher 和 CUDA Runtime，观察 launch configuration 怎样创建这个 Grid。</p></div>
+        <a href="#/gpu/cuda-kernel">进入 CUDA Kernel</a>
       </section>
 
       <footer className="gpu-reference-footer">

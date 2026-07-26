@@ -18,6 +18,7 @@ describe("Atlas hash router", () => {
 
   it("routes the GPU execution-model playground", () => {
     assert.deepEqual(parseHash("#/gpu/architecture"), { kind: "topic", topicId: "gpu-architecture" });
+    assert.deepEqual(parseHash("#/gpu/cuda-kernel"), { kind: "topic", topicId: "cuda-kernel" });
     assert.deepEqual(parseHash("#/gpu/cuda-stream"), { kind: "topic", topicId: "cuda-stream" });
   });
 

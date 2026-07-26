@@ -103,7 +103,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     icon: "cpu",
     topics: [
       { id: "gpu-architecture", title: "GPU、SM 与 Warp", description: "用一个梯度 kernel 串起 Grid、Block、SM、Warp、Lane、寄存器与 HBM。", status: "available", route: "/gpu/architecture", prerequisites: ["gradient"] },
-      { id: "cuda-kernel", title: "CUDA Kernel", description: "算子如何变成 GPU 上的任务。", status: "next", prerequisites: ["gpu-architecture"] },
+      { id: "cuda-kernel", title: "CUDA Kernel", description: "Tensor 算子如何经 Dispatcher 和 Runtime 变成 GPU 任务。", status: "available", route: "/gpu/cuda-kernel", prerequisites: ["gpu-architecture"] },
       { id: "cuda-stream", title: "CUDA Stream", description: "计算与通信怎样排队、建立依赖并安全重叠。", status: "available", route: "/gpu/cuda-stream", prerequisites: ["cuda-kernel"] },
       { id: "memory-hierarchy", title: "HBM、SRAM 与 Cache", description: "数据在哪一层以及搬运代价。", status: "next", prerequisites: ["gpu-architecture"] },
       { id: "mixed-precision", title: "Mixed Precision", description: "精度、吞吐与稳定性的权衡。", status: "mapped", prerequisites: ["cuda-kernel"] },
@@ -177,7 +177,7 @@ export const learningJourneys: LearningJourney[] = [
     title: "跟着一个梯度，走到多机多卡",
     description: "从反向传播产生梯度开始，依次理解 GPU 执行、集合通信、DDP、ZeRO 与 FSDP。",
     status: "active",
-    topicIds: ["gradient", "gpu-architecture", "cuda-stream", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
+    topicIds: ["gradient", "gpu-architecture", "cuda-kernel", "cuda-stream", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
   },
   {
     id: "text-to-context",
