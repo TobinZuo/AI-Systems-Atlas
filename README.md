@@ -20,14 +20,15 @@ loss.backward()
 - Concept Mode for deterministic, reversible teaching scenarios
 - Trace Mode with a multi-lane CPU, CUDA Stream, NCCL, NVLink, and HBM timeline
 - Local Chrome Trace / PyTorch Profiler JSON import with X and B/E event support
-- Five synchronized views: system topology, rank/process, GPU internals, Ring collective, and AdamW
-- A rotatable 3D system topology built with React Three Fiber
-- Play, pause, single-step, seek, and speed controls
+- A single-screen DDP Playground inspired by direct-manipulation teaching tools
+- Editable per-rank gradients with immediate, deterministic recomputation
+- Manual phase controls for every Reduce-Scatter and All-Gather round
+- Stable system flow, chunk matrix, selected-rank transfer, and causal explanation views
+- Semantic colors for framework, compute, collective, network, memory, and optimizer work
 - A deterministic DDP event model with explicit dependencies
 - A numeric Ring All-Reduce simulator with per-rank, per-chunk, per-round state
 - Concrete gradient values, send/receive routes, and reduction equations
-- CPU thread, CUDA Stream/Event, HBM address, SM, Block, Warp, and thread-lane drill-downs
-- A causal inspector that explains prerequisites, actions, results, call paths, and misconceptions
+- A causal inspector that explains why work starts, what the system does, and what state changes
 - Responsive light and dark themes
 - Reduced-motion support
 - GitHub Pages deployment workflow
@@ -41,12 +42,11 @@ Scenario events
       |
 Simulation state
       |
-      +-- 3D scene
-      +-- Rank process and CUDA streams
-      +-- GPU / SM / Warp cutaway
-      +-- Numeric Ring debugger
+      +-- Editable rank-local gradients
+      +-- Numeric Ring state matrix
+      +-- Selected-rank send and receive equations
       +-- AdamW state transition
-      +-- Timeline and causal inspector
+      +-- Stable causal inspector
 
 Chrome / PyTorch Trace JSON
       |
@@ -67,8 +67,8 @@ src/
   sim/          Pure timeline, validation, and Ring All-Reduce functions
   trace/        Chrome Trace parser and category inference
   traces/       Built-in profiler-style teaching traces
-  store/        Playback and selection state
-  components/   3D and 2D presentation layers
+  playground/   Direct-manipulation DDP teaching model
+  components/   Playground and Trace presentation layers
 ```
 
 This separation makes it possible to add tokenizer, Transformer, optimizer,

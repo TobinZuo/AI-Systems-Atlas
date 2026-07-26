@@ -1,12 +1,9 @@
-import {
-  Atom,
-  BracketsCurly,
-  ChartLineUp,
-  CirclesFour,
-  Graph,
-  Stack,
-} from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "motion/react";
+import { Atom } from "@phosphor-icons/react/Atom";
+import { BracketsCurly } from "@phosphor-icons/react/BracketsCurly";
+import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
+import { CirclesFour } from "@phosphor-icons/react/CirclesFour";
+import { Graph } from "@phosphor-icons/react/Graph";
+import { Stack } from "@phosphor-icons/react/Stack";
 
 const paths = [
   {
@@ -50,8 +47,6 @@ const paths = [
 ];
 
 export function LearningPaths() {
-  const reducedMotion = useReducedMotion();
-
   return (
     <section className="learning-paths" id="learning-paths">
       <div className="section-copy">
@@ -65,17 +60,9 @@ export function LearningPaths() {
         {paths.map((path, index) => {
           const Icon = path.icon;
           return (
-            <motion.article
+            <article
               className={path.featured ? "path-card is-featured" : "path-card"}
               key={path.title}
-              initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{
-                duration: 0.45,
-                delay: reducedMotion ? 0 : index * 0.045,
-                ease: [0.16, 1, 0.3, 1],
-              }}
             >
               <div className="path-icon" aria-hidden="true">
                 <Icon size={24} weight="duotone" />
@@ -85,7 +72,7 @@ export function LearningPaths() {
                 <p>{path.description}</p>
               </div>
               <span className="path-status">{path.status}</span>
-            </motion.article>
+            </article>
           );
         })}
       </div>

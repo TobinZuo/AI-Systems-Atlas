@@ -13,7 +13,7 @@ const categories: Array<{ id: TraceCategory | "all"; label: string }> = [
 export function TraceCategoryFilter({ value, onChange }: { value: TraceCategory | "all"; onChange: (value: TraceCategory | "all") => void }) {
   return (
     <div className="trace-category-filter" aria-label="事件类型筛选">
-      {categories.map((category) => <button type="button" className={value === category.id ? "is-active" : ""} onClick={() => onChange(category.id)} key={category.id}>{category.label}</button>)}
+      {categories.map((category) => <button type="button" className={`filter-${category.id}${value === category.id ? " is-active" : ""}`} onClick={() => onChange(category.id)} key={category.id}>{category.label}</button>)}
     </div>
   );
 }

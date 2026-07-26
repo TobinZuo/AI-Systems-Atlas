@@ -1,4 +1,7 @@
-import { ArrowRight, Clock, LinkSimple, Stack } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { Clock } from "@phosphor-icons/react/Clock";
+import { LinkSimple } from "@phosphor-icons/react/LinkSimple";
+import { Stack } from "@phosphor-icons/react/Stack";
 import type { TraceDataset, TraceEvent } from "../../domain/trace";
 
 const displayValue = (value: unknown) => {

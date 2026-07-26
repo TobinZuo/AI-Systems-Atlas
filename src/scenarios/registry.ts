@@ -18,7 +18,7 @@ export const scenarioRegistry: ScenarioRegistration[] = [
     description: "从 backward、GPU kernel、Ring All-Reduce 到 AdamW。",
     course: "CS336 Assignment 2",
     status: "available",
-    capabilities: ["concept", "numeric-state", "3d-topology", "trace-sample"],
+    capabilities: ["concept", "numeric-state", "direct-manipulation", "trace-sample"],
     scenario: ddpScenario,
   },
   {

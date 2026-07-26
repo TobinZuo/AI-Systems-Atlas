@@ -1,4 +1,6 @@
-import { FileArrowUp, MagnifyingGlass, WarningCircle } from "@phosphor-icons/react";
+import { FileArrowUp } from "@phosphor-icons/react/FileArrowUp";
+import { MagnifyingGlass } from "@phosphor-icons/react/MagnifyingGlass";
+import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
 import { useRef, useState } from "react";
 import type { TraceCategory, TraceDataset, TraceEvent } from "../domain/trace";
 import { parseChromeTrace } from "../trace/chromeTrace";
@@ -38,7 +40,7 @@ export function TraceWorkspace({ onOpenConcept }: { onOpenConcept: (eventId: str
   };
 
   return (
-    <section className="trace-workspace" aria-label="Trace analysis workspace">
+    <section className="trace-workspace" id="trace-workspace" aria-label="Trace analysis workspace">
       <header className="trace-workspace-header">
         <div><span>Trace source</span><strong>{dataset.name}</strong><small>{dataset.description}</small></div>
         <div className="trace-source-facts"><span>{dataset.events.length} events</span><span>{dataset.lanes.length} lanes</span><span>{dataset.totalDuration.toFixed(2)} ms</span></div>
