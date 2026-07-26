@@ -1,0 +1,34 @@
+{
+  "name": "ai-systems-atlas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit --pretty false",
+    "test": "tsx --test src/**/*.test.ts",
+    "test:watch": "tsx --test --watch src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.7",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "motion": "^12.23.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.172.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.172.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14"
+  }
+}
