@@ -1,16 +1,32 @@
-import { useEffect, useState } from "react";
-import { CUDAKernelTopicPage } from "./components/CUDAKernelTopicPage";
-import { CUDAStreamsTopicPage } from "./components/CUDAStreamsTopicPage";
-import { DDPTopicPage } from "./components/DDPTopicPage";
-import { DistributedComparisonTopicPage } from "./components/DistributedComparisonTopicPage";
-import { FSDPTopicPage } from "./components/FSDPTopicPage";
-import { GPUArchitectureTopicPage } from "./components/GPUArchitectureTopicPage";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { HomePage } from "./components/HomePage";
-import { ShardedOptimizerTopicPage } from "./components/ShardedOptimizerTopicPage";
 import { SiteHeader } from "./components/SiteHeader";
 import { parseHash, type AtlasRoute } from "./router";
 
+const AutogradTopicPage = lazy(() => import("./components/AutogradTopicPage").then((module) => ({ default: module.AutogradTopicPage })));
+const CUDAKernelTopicPage = lazy(() => import("./components/CUDAKernelTopicPage").then((module) => ({ default: module.CUDAKernelTopicPage })));
+const CUDAStreamsTopicPage = lazy(() => import("./components/CUDAStreamsTopicPage").then((module) => ({ default: module.CUDAStreamsTopicPage })));
+const DDPTopicPage = lazy(() => import("./components/DDPTopicPage").then((module) => ({ default: module.DDPTopicPage })));
+const DistributedComparisonTopicPage = lazy(() => import("./components/DistributedComparisonTopicPage").then((module) => ({ default: module.DistributedComparisonTopicPage })));
+const FSDPTopicPage = lazy(() => import("./components/FSDPTopicPage").then((module) => ({ default: module.FSDPTopicPage })));
+const GPUArchitectureTopicPage = lazy(() => import("./components/GPUArchitectureTopicPage").then((module) => ({ default: module.GPUArchitectureTopicPage })));
+const ShardedOptimizerTopicPage = lazy(() => import("./components/ShardedOptimizerTopicPage").then((module) => ({ default: module.ShardedOptimizerTopicPage })));
+
 type Theme = "light" | "dark";
+
+function TopicPageSkeleton() {
+  return (
+    <main className="topic-page-skeleton" aria-live="polite" aria-label="正在加载专题">
+      <div className="topic-skeleton-breadcrumb" />
+      <div className="topic-skeleton-grid">
+        <div><i /><i /><i /></div>
+        <div><i /><i /><i /><i /></div>
+      </div>
+      <div className="topic-skeleton-workspace"><i /><i /><i /></div>
+      <span className="visually-hidden">正在加载交互专题</span>
+    </main>
+  );
+}
 
 function getInitialTheme(): Theme {
   const saved = window.localStorage.getItem("atlas-theme");
@@ -61,13 +77,18 @@ function App() {
       />
 
       {route.kind === "home" && <HomePage />}
-      {route.kind === "topic" && route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
-      {route.kind === "topic" && route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
-      {route.kind === "topic" && route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
-      {route.kind === "topic" && route.topicId === "ddp" && <DDPTopicPage />}
-      {route.kind === "topic" && route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
-      {route.kind === "topic" && route.topicId === "fsdp" && <FSDPTopicPage />}
-      {route.kind === "topic" && route.topicId === "compare" && <DistributedComparisonTopicPage />}
+      {route.kind === "topic" && (
+        <Suspense fallback={<TopicPageSkeleton />}>
+          {route.topicId === "autograd" && <AutogradTopicPage />}
+          {route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
+          {route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
+          {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
+          {route.topicId === "ddp" && <DDPTopicPage />}
+          {route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
+          {route.topicId === "fsdp" && <FSDPTopicPage />}
+          {route.topicId === "compare" && <DistributedComparisonTopicPage />}
+        </Suspense>
+      )}
       {route.kind === "not-found" && (
         <main className="not-found" id="top">
           <p className="eyebrow">Topic not found</p>

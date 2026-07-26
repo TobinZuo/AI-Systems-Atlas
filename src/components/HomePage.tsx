@@ -7,7 +7,7 @@ import { availableTopicCount, knowledgeDomains, topicCount } from "../content/to
 import { KnowledgeMap } from "./KnowledgeMap";
 import { LearningPaths } from "./LearningPaths";
 
-const ddpFlow = ["Backward", "Bucket", "Reduce-Scatter", "All-Gather", "AdamW"];
+const autogradFlow = ["Forward compute", "grad_fn", "Saved tensors", "Backward Engine", "w.grad"];
 
 export function HomePage() {
   return (
@@ -20,8 +20,8 @@ export function HomePage() {
             从 token、Attention 和 Autograd，一路看到 GPU Kernel、集合通信、推理服务与多模态生成。每个概念都放回真实数据流里理解。
           </p>
           <div className="hero-actions">
-            <a className="primary-action" href="#/distributed/ddp">
-              进入 DDP 实验台
+            <a className="primary-action" href="#/training/autograd">
+              从 Autograd 开始
               <ArrowRight size={17} aria-hidden="true" />
             </a>
             <a className="secondary-action" href="#/paths">
@@ -36,26 +36,26 @@ export function HomePage() {
           </dl>
         </div>
 
-        <a className="live-topic-preview" href="#/distributed/ddp" aria-label="进入 DDP 一个梯度的旅程专题">
+        <a className="live-topic-preview" href="#/training/autograd" aria-label="进入 Autograd 动态计算图专题">
           <div className="preview-heading">
             <span><i />当前可运行专题</span>
-            <strong>DDP</strong>
+            <strong>Autograd</strong>
           </div>
           <div className="preview-packet">
-            <span>gradient chunk</span>
-            <code>[1, 2] · fp32 · 8 B</code>
+            <span>scalar loss</span>
+            <code>0.5, requires_grad=True</code>
           </div>
           <div className="preview-flow" aria-hidden="true">
-            {ddpFlow.map((step, index) => (
+            {autogradFlow.map((step, index) => (
               <div className="preview-step" key={step}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <strong>{step}</strong>
-                {index < ddpFlow.length - 1 && <i />}
+                {index < autogradFlow.length - 1 && <i />}
               </div>
             ))}
           </div>
           <div className="preview-footer">
-            <span>跟踪数据穿过框架、GPU、显存与网络</span>
+            <span>从计算图起点跟踪一个梯度的完整生命周期</span>
             <ArrowRight size={18} aria-hidden="true" />
           </div>
         </a>

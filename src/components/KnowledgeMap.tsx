@@ -31,8 +31,8 @@ const statusLabels: Record<TopicStatus, string> = {
 };
 
 export function KnowledgeMap() {
-  const [selectedTopicId, setSelectedTopicId] = useState("ddp");
-  const selectedTopic = topicIndex.get(selectedTopicId) ?? topicIndex.get("ddp")!;
+  const [selectedTopicId, setSelectedTopicId] = useState("autograd");
+  const selectedTopic = topicIndex.get(selectedTopicId) ?? topicIndex.get("autograd")!;
   const selectedDomain = knowledgeDomains.find((domain) => domain.id === selectedTopic.domainId)!;
   const prerequisiteIds = new Set(selectedTopic.prerequisites ?? []);
   const prerequisites = [...prerequisiteIds]

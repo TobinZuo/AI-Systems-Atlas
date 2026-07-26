@@ -15,7 +15,8 @@ The root page currently maps 45 topics across seven domains:
 - Inference systems
 - Generative and multimodal systems
 
-The first topic family follows model state from DDP to ZeRO-1 and FSDP:
+The first active journey follows one gradient from Autograd through GPU execution,
+then compares how DDP, ZeRO-1, and FSDP manage distributed model state:
 
 ```text
 loss.backward()
@@ -39,10 +40,12 @@ FSDP
 ## What is included
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
+- An interactive Autograd lab for dynamic graph recording, saved tensors, reverse scheduling, leaf-gradient accumulation, and version-counter errors
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
 - Hash routes that work directly on GitHub Pages
+- Route-level code splitting so each interactive topic loads only when opened
 - Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
 - A shared DDP, ZeRO-1, and FSDP comparison lab with the same model-size and world-size inputs
 - Concept Mode for deterministic, reversible teaching scenarios
@@ -115,6 +118,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 ```text
 #/                    Knowledge map
 #/paths               Cross-topic learning journeys
+#/training/autograd   Dynamic graph, backward scheduling, and leaf gradients
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
 #/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground

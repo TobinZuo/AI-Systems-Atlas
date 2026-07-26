@@ -8,8 +8,8 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.app.json --noEmit --pretty false",
-    "test": "tsx --test src/**/*.test.ts",
-    "test:watch": "tsx --test --watch src/**/*.test.ts"
+    "test": "tsx --test src/*.test.ts src/**/*.test.ts",
+    "test:watch": "tsx --test --watch src/*.test.ts src/**/*.test.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",

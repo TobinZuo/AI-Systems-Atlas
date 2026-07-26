@@ -51,8 +51,8 @@ export function LearningPaths() {
               <div className="journey-state">
                 <span>{isActive ? "已有可交互节点" : "路线已规划"}</span>
                 {isActive && (
-                  <a href="#/distributed/ddp">
-                    从 DDP 开始
+                  <a href="#/training/autograd">
+                    从 Autograd 开始
                     <ArrowRight size={16} aria-hidden="true" />
                   </a>
                 )}

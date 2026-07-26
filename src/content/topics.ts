@@ -85,7 +85,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     question: "模型为什么会越训越好？",
     icon: "graph",
     topics: [
-      { id: "autograd", title: "Autograd", description: "计算图如何记录并反向传播。", status: "next", prerequisites: ["linear"] },
+      { id: "autograd", title: "Autograd", description: "计算图如何记录、调度并把梯度累加到叶子 Tensor。", status: "available", route: "/training/autograd" },
       { id: "loss", title: "Loss 与 Cross Entropy", description: "预测误差如何变成标量目标。", status: "mapped", prerequisites: ["transformer"] },
       { id: "gradient", title: "Gradient", description: "参数变化方向从哪里来。", status: "next", prerequisites: ["autograd", "loss"] },
       { id: "adamw", title: "AdamW", description: "一阶、二阶动量与权重衰减。", status: "next", prerequisites: ["gradient"] },
@@ -175,9 +175,9 @@ export const learningJourneys: LearningJourney[] = [
     id: "gradient-to-cluster",
     eyebrow: "当前主线",
     title: "跟着一个梯度，走到多机多卡",
-    description: "从反向传播产生梯度开始，依次理解 GPU 执行、集合通信、DDP、ZeRO 与 FSDP。",
+    description: "从动态图记录与反向传播开始，依次理解 GPU 执行、集合通信、DDP、ZeRO 与 FSDP。",
     status: "active",
-    topicIds: ["gradient", "gpu-architecture", "cuda-kernel", "cuda-stream", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
+    topicIds: ["autograd", "gradient", "gpu-architecture", "cuda-kernel", "cuda-stream", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
   },
   {
     id: "text-to-context",
