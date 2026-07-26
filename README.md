@@ -44,6 +44,7 @@ FSDP
 - An interactive Autograd lab for dynamic graph recording, saved tensors, reverse scheduling, leaf-gradient accumulation, and version-counter errors
 - An interactive Gradient lab for per-sample derivatives, batch reduction, `.grad` storage, finite-difference checks, optimizer direction, and DDP averaging
 - An interactive AdamW lab for moment history, bias correction, decoupled weight decay, parameter groups, CUDA execution, and distributed memory ownership
+- An interactive Process and Rank lab for torchrun identities, rendezvous, Process Groups, GPU binding, control-plane failures, and collective data paths
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
@@ -127,6 +128,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
 #/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground
+#/distributed/process-rank  OS processes, rank identity, rendezvous, and Process Groups
 #/distributed/ddp     DDP concept playground and trace workspace
 #/distributed/zero-1  Sharded Optimizer ownership and broadcast playground
 #/distributed/fsdp    FSDP parameter lifecycle and memory playground

@@ -41,8 +41,8 @@ export function CUDAStreamsTopicPage() {
       <CUDAStreamsPlayground />
 
       <section className="project-note stream-project-note">
-        <div><p className="eyebrow">Next connection</p><h2>Bucket 同步明白后，就能看懂 DDP 为什么能提速。</h2><p>DDP 在 backward 过程中按 bucket 触发 collective。Stream 决定工作怎样排队，Event 决定通信何时可以安全读取梯度。</p></div>
-        <a href="#/distributed/ddp">进入 DDP<ArrowRight size={17} aria-hidden="true" /></a>
+        <div><p className="eyebrow">Next connection</p><h2>GPU 工作队列已经清楚，下一步看四个独立进程怎样找到彼此。</h2><p>先建立 rank 身份、rendezvous 与 Process Group，再进入 DDP 的梯度集合通信。</p></div>
+        <a href="#/distributed/process-rank">进入 Process 与 Rank<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );

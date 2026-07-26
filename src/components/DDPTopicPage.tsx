@@ -8,7 +8,7 @@ import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { TraceWorkspace } from "./TraceWorkspace";
 import { scrollToSection } from "./scrollToSection";
 
-const prerequisiteTopics = ["Gradient", "CUDA Stream", "集合通信", "Ring AllReduce"];
+const prerequisiteTopics = ["Gradient", "CUDA Stream", "Process 与 Rank", "集合通信", "Ring AllReduce"];
 
 export function DDPTopicPage() {
   const [mode, setMode] = useState<AtlasMode>("concept");

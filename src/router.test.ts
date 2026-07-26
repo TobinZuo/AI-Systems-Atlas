@@ -10,6 +10,7 @@ describe("Atlas hash router", () => {
   });
 
   it("routes all available distributed playgrounds as topics", () => {
+    assert.deepEqual(parseHash("#/distributed/process-rank"), { kind: "topic", topicId: "process-rank" });
     assert.deepEqual(parseHash("#/distributed/ddp"), { kind: "topic", topicId: "ddp" });
     assert.deepEqual(parseHash("#/distributed/zero-1"), { kind: "topic", topicId: "zero-1" });
     assert.deepEqual(parseHash("#/distributed/fsdp"), { kind: "topic", topicId: "fsdp" });

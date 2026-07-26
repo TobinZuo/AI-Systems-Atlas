@@ -119,7 +119,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     question: "一张卡放不下、算不快怎么办？",
     icon: "network",
     topics: [
-      { id: "process-rank", title: "Process 与 Rank", description: "任务身份和通信组如何建立。", status: "next" },
+      { id: "process-rank", title: "Process 与 Rank", description: "从 torchrun、环境变量与 TCPStore 建立任务身份和通信组。", status: "available", route: "/distributed/process-rank" },
       { id: "collective", title: "集合通信", description: "Broadcast、Reduce、Gather 的共同抽象。", status: "next", prerequisites: ["process-rank"] },
       { id: "ring-allreduce", title: "Ring AllReduce", description: "Reduce-Scatter 与 All-Gather 如何拼成归约。", status: "next", prerequisites: ["collective"] },
       { id: "ddp", title: "DDP", description: "复制模型、同步梯度、并行计算。", status: "available", route: "/distributed/ddp", prerequisites: ["gradient", "cuda-stream", "ring-allreduce"] },
@@ -177,7 +177,7 @@ export const learningJourneys: LearningJourney[] = [
     title: "跟着一个梯度，走到多机多卡",
     description: "从动态图记录与反向传播开始，经 AdamW 与 GPU 执行，依次理解集合通信、DDP、ZeRO 与 FSDP。",
     status: "active",
-    topicIds: ["autograd", "gradient", "adamw", "gpu-architecture", "cuda-kernel", "cuda-stream", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
+    topicIds: ["autograd", "gradient", "adamw", "gpu-architecture", "cuda-kernel", "cuda-stream", "process-rank", "collective", "ring-allreduce", "ddp", "zero-1", "fsdp"],
   },
   {
     id: "text-to-context",
