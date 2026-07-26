@@ -17607,3 +17607,1626 @@ footer span:first-child {
     border-bottom: 0;
   }
 }
+
+/* Attention ------------------------------------------------------------- */
+
+.attention-topic-hero .eyebrow,
+.attention-project-note .eyebrow {
+  color: var(--collective);
+}
+
+.attention-topic-hero .primary-action {
+  background: var(--collective);
+}
+
+.attention-topic-hero .primary-action:hover {
+  background: color-mix(in srgb, var(--collective) 82%, var(--text));
+}
+
+.attention-lab {
+  width: min(1420px, calc(100% - 48px));
+  margin: 74px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-top: 4px solid var(--collective);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 34px 90px -70px var(--shadow);
+  scroll-margin-top: 82px;
+}
+
+.attention-lab-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(390px, 0.75fr);
+  align-items: end;
+  gap: 30px;
+  padding: 24px 70px 24px 26px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--collective-soft) 28%, var(--surface));
+}
+
+.attention-lab-header > div:first-child {
+  display: grid;
+  gap: 7px;
+}
+
+.attention-lab-header > div:first-child > span,
+.attention-query-stage > header span,
+.attention-matrix-stage > header span,
+.attention-value-mix > header span,
+.attention-projection-stage > header span,
+.attention-head-stage > header span,
+.attention-cost-stage > header span,
+.attention-sources > header span {
+  color: var(--collective);
+  font: 0.55rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+.attention-lab-header h2 {
+  max-width: 850px;
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.55rem);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+
+.attention-lab-header p {
+  max-width: 790px;
+  margin: 4px 0 0;
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.attention-formula-card {
+  display: grid;
+  gap: 7px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--compute);
+  background: var(--surface);
+}
+
+.attention-formula-card span,
+.attention-formula-card small {
+  color: var(--text-faint);
+  font-size: 0.47rem;
+}
+
+.attention-formula-card code {
+  color: var(--compute);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.attention-reset {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 34px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  color: var(--text-soft);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.attention-reset:hover {
+  border-color: var(--collective);
+  color: var(--collective);
+}
+
+.attention-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+
+.attention-controls fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 0;
+  border-right: 1px solid var(--line);
+}
+
+.attention-controls fieldset:last-child {
+  border-right: 0;
+}
+
+.attention-controls legend {
+  padding: 0;
+  color: var(--text-faint);
+  font: 0.5rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-controls fieldset > div {
+  display: flex;
+  min-width: 0;
+  margin-top: 6px;
+  overflow-x: auto;
+}
+
+.attention-controls button {
+  display: grid;
+  min-width: 96px;
+  min-height: 48px;
+  flex: 1 0 auto;
+  align-content: center;
+  gap: 3px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+}
+
+.attention-controls button + button {
+  border-left: 0;
+}
+
+.attention-controls button:hover,
+.attention-controls button.is-active {
+  border-color: var(--collective);
+  color: var(--collective);
+  background: var(--collective-soft);
+  box-shadow: inset 0 -2px var(--collective);
+}
+
+.attention-controls button strong {
+  font: 750 0.56rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-controls button small {
+  color: var(--text-faint);
+  font-size: 0.42rem;
+}
+
+.attention-phase-rail {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.attention-phase-rail > div {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.attention-phase-rail > div > button {
+  position: relative;
+  display: grid;
+  min-width: 112px;
+  min-height: 56px;
+  flex: 1 0 auto;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  color: var(--text-faint);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.attention-phase-rail > div > button::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  content: "";
+  background: transparent;
+}
+
+.attention-phase-rail > div > button.is-complete {
+  color: var(--collective);
+  background: color-mix(in srgb, var(--collective-soft) 28%, transparent);
+}
+
+.attention-phase-rail > div > button.is-active {
+  color: var(--text);
+  background: var(--collective-soft);
+}
+
+.attention-phase-rail > div > button.is-active::after {
+  background: var(--collective);
+}
+
+.attention-phase-rail strong {
+  font-size: 0.51rem;
+}
+
+.attention-phase-rail small {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: 0.42rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-step-arrow {
+  display: grid;
+  place-items: center;
+  border: 0;
+  color: var(--text-soft);
+  background: var(--surface-raised);
+  cursor: pointer;
+}
+
+.attention-step-arrow:disabled {
+  opacity: 0.34;
+  cursor: not-allowed;
+}
+
+.attention-operation-band {
+  display: grid;
+  min-height: 94px;
+  grid-template-columns: 38px 74px minmax(190px, 0.8fr) minmax(190px, 0.8fr) minmax(260px, 1.3fr);
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+
+.attention-operation-band > div {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid currentColor;
+  color: var(--compute);
+  background: var(--surface);
+}
+
+.attention-operation-band.phase-mask > div {
+  color: var(--network);
+}
+
+.attention-operation-band.phase-mix > div {
+  color: var(--optimizer);
+}
+
+.attention-operation-band > span {
+  color: var(--text-faint);
+  font-size: 0.47rem;
+}
+
+.attention-operation-band > strong {
+  font-size: 0.65rem;
+  line-height: 1.4;
+}
+
+.attention-operation-band > code {
+  color: var(--compute);
+  font-size: 0.55rem;
+  white-space: normal;
+}
+
+.attention-operation-band > p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.51rem;
+  line-height: 1.5;
+}
+
+.attention-main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-query-stage,
+.attention-matrix-stage,
+.attention-value-mix,
+.attention-projection-stage,
+.attention-head-stage,
+.attention-cost-stage {
+  padding: 22px 24px;
+}
+
+.attention-query-stage {
+  min-width: 0;
+  border-right: 1px solid var(--line);
+  background: color-mix(in srgb, var(--collective-soft) 10%, var(--surface));
+}
+
+.attention-query-stage > header,
+.attention-matrix-stage > header,
+.attention-value-mix > header,
+.attention-projection-stage > header,
+.attention-head-stage > header,
+.attention-cost-stage > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 15px;
+}
+
+.attention-query-stage > header div,
+.attention-matrix-stage > header div,
+.attention-value-mix > header div,
+.attention-projection-stage > header div,
+.attention-head-stage > header div,
+.attention-cost-stage > header div {
+  display: grid;
+  gap: 5px;
+}
+
+.attention-query-stage h3,
+.attention-matrix-stage h3,
+.attention-value-mix h3,
+.attention-projection-stage h3,
+.attention-head-stage h3,
+.attention-cost-stage h3,
+.attention-sources h3 {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.attention-query-stage > header code,
+.attention-matrix-stage > header code,
+.attention-value-mix > header code,
+.attention-projection-stage > header code,
+.attention-cost-stage > header code {
+  color: var(--collective);
+  font-size: 0.53rem;
+  white-space: normal;
+}
+
+.attention-selected-flow {
+  display: grid;
+  grid-template-columns: 150px 20px minmax(0, 1fr) 20px 145px;
+  align-items: center;
+  gap: 8px;
+}
+
+.attention-flow-arrow {
+  justify-self: center;
+  color: var(--collective);
+}
+
+.attention-query-card,
+.attention-output-card {
+  display: grid;
+  min-height: 164px;
+  align-content: center;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--framework);
+  background: var(--surface);
+}
+
+.attention-output-card {
+  border-top-color: var(--optimizer);
+  opacity: 0.55;
+}
+
+.attention-output-card.is-ready {
+  opacity: 1;
+  background: var(--optimizer-soft);
+}
+
+.attention-query-card > span,
+.attention-output-card > span {
+  color: var(--text-faint);
+  font-size: 0.43rem;
+}
+
+.attention-query-card > strong,
+.attention-output-card > strong {
+  font-size: 0.75rem;
+}
+
+.attention-query-card code,
+.attention-output-card code {
+  color: var(--framework);
+  font-size: 0.5rem;
+  white-space: normal;
+}
+
+.attention-output-card code {
+  color: var(--optimizer);
+}
+
+.attention-query-card i {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+
+.attention-output-card small {
+  color: var(--text-faint);
+  font-size: 0.42rem;
+  line-height: 1.4;
+}
+
+.attention-key-lanes {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line);
+}
+
+.attention-key-lanes > button {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--line);
+  color: var(--text-soft);
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+}
+
+.attention-key-lanes > button:last-child {
+  border-right: 0;
+}
+
+.attention-key-lanes > button:hover,
+.attention-key-lanes > button.is-selected {
+  background: var(--collective-soft);
+  box-shadow: inset 0 0 0 2px var(--collective);
+}
+
+.attention-key-lanes > button.is-masked {
+  background: repeating-linear-gradient(135deg, var(--surface-raised), var(--surface-raised) 6px, var(--surface-strong) 6px, var(--surface-strong) 12px);
+}
+
+.attention-key-lanes header,
+.attention-key-lanes footer {
+  display: grid;
+  min-height: 62px;
+  align-content: center;
+  gap: 3px;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-key-lanes header span,
+.attention-key-lanes footer span {
+  color: var(--collective);
+  font: 0.43rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-key-lanes header strong {
+  font-size: 0.56rem;
+}
+
+.attention-key-lanes header code,
+.attention-key-lanes footer code {
+  overflow: hidden;
+  color: var(--text-soft);
+  font-size: 0.43rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attention-key-lanes > button > div {
+  display: grid;
+  min-height: 42px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-key-lanes > button > div span {
+  color: var(--text-faint);
+  font-size: 0.38rem;
+}
+
+.attention-key-lanes > button > div strong {
+  font: 750 0.49rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-lane-weight {
+  position: relative;
+  overflow: hidden;
+}
+
+.attention-lane-weight i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--optimizer);
+}
+
+.attention-key-lanes footer {
+  min-height: 48px;
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--optimizer-soft) 25%, var(--surface));
+}
+
+.attention-role-legend {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 12px;
+  border: 1px solid var(--line);
+}
+
+.attention-role-legend > div {
+  display: grid;
+  gap: 4px;
+  padding: 9px 11px;
+  border-right: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+
+.attention-role-legend > div:last-child {
+  border-right: 0;
+}
+
+.attention-role-legend strong {
+  color: var(--collective);
+  font-size: 0.52rem;
+}
+
+.attention-role-legend > div:first-child strong { color: var(--framework); }
+.attention-role-legend > div:last-child strong { color: var(--optimizer); }
+
+.attention-role-legend span {
+  color: var(--text-soft);
+  font-size: 0.44rem;
+}
+
+.attention-cell-inspector {
+  background: var(--surface-raised);
+}
+
+.attention-cell-inspector > header {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border-top: 4px solid var(--compute);
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-cell-inspector > header span,
+.attention-cell-inspector > div > span {
+  color: var(--compute);
+  font: 0.44rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-cell-inspector > header strong {
+  font-size: 0.58rem;
+  line-height: 1.4;
+}
+
+.attention-cell-inspector > div {
+  display: grid;
+  gap: 5px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-cell-inspector > div:last-child {
+  border-bottom: 0;
+}
+
+.attention-cell-inspector > div code {
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 0.51rem;
+  line-height: 1.45;
+  white-space: normal;
+}
+
+.attention-cell-inspector > div strong {
+  font-size: 0.55rem;
+  line-height: 1.4;
+}
+
+.attention-cell-inspector > div small {
+  color: var(--text-faint);
+  font-size: 0.4rem;
+}
+
+.attention-cell-inspector > div.is-masked {
+  background: var(--chunk-3-soft);
+}
+
+.attention-cell-inspector > div.is-masked > span,
+.attention-cell-inspector > div.is-masked > strong {
+  color: var(--chunk-3);
+}
+
+.attention-matrix-stage,
+.attention-value-mix,
+.attention-projection-stage,
+.attention-head-stage,
+.attention-cost-stage,
+.attention-sources {
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-matrix-stage {
+  background: var(--surface);
+}
+
+.attention-matrix-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 12px;
+}
+
+.attention-matrix-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+.attention-score-matrix {
+  display: grid;
+  min-width: 650px;
+  grid-template-columns: 94px repeat(4, 1fr);
+  background: var(--surface);
+}
+
+.attention-score-matrix > * {
+  min-width: 0;
+  min-height: 72px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-score-matrix > :nth-child(5n) {
+  border-right: 0;
+}
+
+.attention-score-matrix > :nth-last-child(-n + 5) {
+  border-bottom: 0;
+}
+
+.attention-matrix-corner {
+  display: grid;
+  place-items: center;
+  color: var(--text-faint);
+  background: var(--surface-raised);
+  font: 0.46rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-score-matrix > button {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  align-content: center;
+  gap: 4px;
+  padding: 8px;
+  color: var(--text-soft);
+  background: var(--surface);
+  text-align: center;
+  cursor: pointer;
+}
+
+.attention-score-matrix > button:hover,
+.attention-score-matrix > button.is-selected {
+  background: var(--collective-soft);
+  box-shadow: inset 0 0 0 2px var(--collective);
+}
+
+.attention-score-matrix > button.is-masked {
+  background: repeating-linear-gradient(135deg, var(--surface-raised), var(--surface-raised) 6px, var(--surface-strong) 6px, var(--surface-strong) 12px);
+}
+
+.attention-score-matrix > button > i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.28;
+  background: var(--collective);
+}
+
+.attention-score-matrix > button > strong,
+.attention-score-matrix > button > small {
+  position: relative;
+}
+
+.attention-score-matrix > button > strong {
+  font: 750 0.58rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-score-matrix > button > small {
+  color: var(--text-faint);
+  font-size: 0.39rem;
+}
+
+.attention-score-matrix > button.attention-row-header,
+.attention-score-matrix > span + button,
+.attention-score-matrix > span + button + button,
+.attention-score-matrix > span + button + button + button,
+.attention-score-matrix > span + button + button + button + button {
+  background: var(--surface-raised);
+}
+
+.attention-matrix-layout > aside {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--optimizer);
+  background: var(--surface-raised);
+}
+
+.attention-matrix-layout > aside > span {
+  color: var(--optimizer);
+  font: 0.45rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-matrix-layout > aside > strong {
+  font-size: 0.6rem;
+}
+
+.attention-matrix-layout > aside > div {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.attention-matrix-layout > aside > div > span {
+  position: relative;
+  display: grid;
+  min-height: 32px;
+  grid-template-columns: 32px 1fr;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.attention-matrix-layout > aside > div > span.is-selected {
+  border-color: var(--collective);
+}
+
+.attention-matrix-layout > aside > div i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.25;
+  background: var(--optimizer);
+}
+
+.attention-matrix-layout > aside small,
+.attention-matrix-layout > aside > div strong {
+  position: relative;
+  font-size: 0.42rem;
+}
+
+.attention-matrix-layout > aside > div strong {
+  justify-self: end;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-matrix-layout > aside p {
+  margin: 3px 0 0;
+  color: var(--text-soft);
+  font-size: 0.45rem;
+  line-height: 1.5;
+}
+
+.attention-value-mix {
+  background: color-mix(in srgb, var(--optimizer-soft) 14%, var(--surface));
+}
+
+.attention-value-mix > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) 30px minmax(150px, 0.85fr);
+  align-items: stretch;
+  border: 1px solid var(--line);
+}
+
+.attention-value-mix article {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 132px;
+  align-content: center;
+  gap: 7px;
+  overflow: hidden;
+  padding: 11px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.attention-value-mix article.is-selected {
+  background: var(--optimizer-soft);
+  box-shadow: inset 0 0 0 2px var(--optimizer);
+}
+
+.attention-value-mix article.is-zero {
+  opacity: 0.52;
+}
+
+.attention-value-mix article header {
+  display: grid;
+  gap: 3px;
+}
+
+.attention-value-mix article header span {
+  color: var(--optimizer);
+  font: 0.46rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-value-mix article header strong {
+  font-size: 0.53rem;
+}
+
+.attention-value-mix article code,
+.attention-value-mix article > strong {
+  font: 700 0.5rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-value-mix article > svg {
+  color: var(--text-faint);
+}
+
+.attention-value-mix article > i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--surface-strong);
+}
+
+.attention-value-mix article > i span {
+  display: block;
+  height: 100%;
+  background: var(--optimizer);
+}
+
+.attention-mix-equals {
+  display: grid;
+  place-items: center;
+  color: var(--text-faint);
+  background: var(--surface-raised);
+  font: 800 0.8rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-style: normal;
+}
+
+.attention-value-mix article.attention-mix-result {
+  border-right: 0;
+  border-top: 4px solid var(--optimizer);
+  background: var(--optimizer-soft);
+}
+
+.attention-mix-result small {
+  color: var(--text-faint);
+  font-size: 0.4rem;
+  line-height: 1.4;
+}
+
+.attention-projection-stage {
+  background: var(--surface);
+}
+
+.attention-projection-table {
+  display: grid;
+  min-width: 820px;
+  grid-template-columns: 120px repeat(4, 1fr);
+  border: 1px solid var(--line);
+}
+
+.attention-projection-stage > .attention-projection-table {
+  overflow: hidden;
+}
+
+.attention-projection-table > * {
+  display: grid;
+  min-width: 0;
+  min-height: 56px;
+  align-content: center;
+  padding: 7px 9px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.attention-projection-table > :nth-child(5n) {
+  border-right: 0;
+}
+
+.attention-projection-table > :nth-last-child(-n + 5) {
+  border-bottom: 0;
+}
+
+.attention-projection-table > strong,
+.attention-projection-corner {
+  color: var(--text-faint);
+  background: var(--surface-raised);
+  font: 0.46rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-projection-table > button {
+  gap: 3px;
+  border-top: 0;
+  border-left: 0;
+  color: var(--text-soft);
+  background: var(--surface-raised);
+  text-align: left;
+  cursor: pointer;
+}
+
+.attention-projection-table > button:hover,
+.attention-projection-table > button.is-selected {
+  color: var(--framework);
+  background: var(--framework-soft);
+}
+
+.attention-projection-table > button strong {
+  font-size: 0.54rem;
+}
+
+.attention-projection-table > button small {
+  color: var(--text-faint);
+  font-size: 0.39rem;
+}
+
+.attention-projection-table > code {
+  color: var(--text-soft);
+  background: var(--surface);
+  font-size: 0.51rem;
+}
+
+.attention-projection-table .role-q { color: var(--framework); background: color-mix(in srgb, var(--framework-soft) 35%, var(--surface)); }
+.attention-projection-table .role-k { color: var(--collective); background: color-mix(in srgb, var(--collective-soft) 35%, var(--surface)); }
+.attention-projection-table .role-v { color: var(--optimizer); background: color-mix(in srgb, var(--optimizer-soft) 35%, var(--surface)); }
+
+.attention-projection-stage {
+  overflow-x: auto;
+}
+
+.attention-projection-weights {
+  display: grid;
+  min-width: 820px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 10px;
+  border: 1px solid var(--line);
+}
+
+.attention-projection-weights > div {
+  display: grid;
+  gap: 5px;
+  padding: 10px 11px;
+  border-right: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+
+.attention-projection-weights > div:last-child {
+  border-right: 0;
+}
+
+.attention-projection-weights span {
+  color: var(--collective);
+  font: 0.44rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-projection-weights code {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.43rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attention-projection-weights small {
+  color: var(--text-faint);
+  font-size: 0.4rem;
+}
+
+.attention-head-stage {
+  background: var(--surface-raised);
+}
+
+.attention-head-controls {
+  display: flex !important;
+  gap: 0 !important;
+  border: 1px solid var(--line);
+}
+
+.attention-head-controls button {
+  min-height: 31px;
+  padding: 0 10px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  color: var(--text-soft);
+  background: var(--surface);
+  font: 0.46rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+  cursor: pointer;
+}
+
+.attention-head-controls button:last-child {
+  border-right: 0;
+}
+
+.attention-head-controls button.is-active {
+  color: var(--network);
+  background: var(--network-soft);
+}
+
+.attention-head-flow {
+  display: grid;
+  grid-template-columns: 0.8fr auto 0.8fr auto minmax(200px, 1.3fr) auto 0.8fr;
+  align-items: stretch;
+}
+
+.attention-head-flow > svg {
+  align-self: center;
+  margin: 0 8px;
+  color: var(--network);
+}
+
+.attention-head-flow > article {
+  display: grid;
+  min-height: 126px;
+  align-content: center;
+  gap: 6px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--network);
+  background: var(--surface);
+}
+
+.attention-head-flow > article span {
+  color: var(--text-faint);
+  font-size: 0.43rem;
+}
+
+.attention-head-flow > article strong {
+  font-size: 0.62rem;
+}
+
+.attention-head-flow > article code {
+  color: var(--network);
+  font-size: 0.53rem;
+}
+
+.attention-head-flow > article small {
+  color: var(--text-soft);
+  font-size: 0.42rem;
+  line-height: 1.4;
+}
+
+.attention-heads {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.attention-heads > span {
+  display: grid;
+  min-height: 62px;
+  align-content: center;
+  gap: 3px;
+  padding: 8px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--head-color, var(--network));
+  background: color-mix(in srgb, var(--head-soft, var(--network-soft)) 45%, var(--surface));
+}
+
+.attention-heads > span:nth-child(even) { border-right: 0; }
+.attention-heads > span:nth-last-child(-n + 2) { border-bottom: 0; }
+.attention-heads > span.head-tone-0 { --head-color: var(--framework); --head-soft: var(--framework-soft); }
+.attention-heads > span.head-tone-1 { --head-color: var(--collective); --head-soft: var(--collective-soft); }
+.attention-heads > span.head-tone-2 { --head-color: var(--optimizer); --head-soft: var(--optimizer-soft); }
+.attention-heads > span.head-tone-3 { --head-color: var(--compute); --head-soft: var(--compute-soft); }
+
+.attention-heads strong {
+  font-size: 0.51rem;
+}
+
+.attention-heads code {
+  color: var(--text);
+  font-size: 0.43rem;
+}
+
+.attention-heads small {
+  font-size: 0.38rem;
+}
+
+.attention-head-stage > p {
+  margin: 11px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--network);
+  color: var(--text-soft);
+  background: var(--network-soft);
+  font-size: 0.49rem;
+  line-height: 1.5;
+}
+
+.attention-head-stage > p strong {
+  color: var(--text);
+}
+
+.attention-cost-stage {
+  background: color-mix(in srgb, var(--memory-soft) 14%, var(--surface));
+}
+
+.attention-cost-stage > header p {
+  max-width: 930px;
+  margin: 1px 0 0;
+  color: var(--text-soft);
+  font-size: 0.49rem;
+  line-height: 1.5;
+}
+
+.attention-cost-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+}
+
+.attention-cost-cards article {
+  display: grid;
+  gap: 7px;
+  padding: 13px;
+  border-right: 1px solid var(--line);
+  border-top: 4px solid var(--memory);
+  background: var(--surface);
+}
+
+.attention-cost-cards article:last-child {
+  border-right: 0;
+}
+
+.attention-cost-cards header,
+.attention-cost-cards article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.attention-cost-cards header {
+  margin-bottom: 3px;
+}
+
+.attention-cost-cards header span,
+.attention-cost-cards article > div span {
+  color: var(--text-faint);
+  font-size: 0.43rem;
+}
+
+.attention-cost-cards header strong {
+  font-size: 0.66rem;
+}
+
+.attention-cost-cards article > div strong {
+  font: 700 0.5rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.attention-cost-cards article > i {
+  height: 6px;
+  margin-top: 3px;
+  overflow: hidden;
+  background: var(--surface-strong);
+}
+
+.attention-cost-cards article > i span {
+  display: block;
+  height: 100%;
+  background: var(--memory);
+}
+
+.attention-growth-proof {
+  display: grid;
+  grid-template-columns: 0.65fr 0.65fr 1.7fr;
+  margin-top: 11px;
+  border: 1px solid var(--line);
+}
+
+.attention-growth-proof > div,
+.attention-growth-proof > p {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 11px 12px;
+  border-right: 1px solid var(--line);
+  background: var(--surface-raised);
+}
+
+.attention-growth-proof > p {
+  border-right: 0;
+  color: var(--text-soft);
+  font-size: 0.48rem;
+  line-height: 1.5;
+}
+
+.attention-growth-proof span {
+  color: var(--text-faint);
+  font-size: 0.41rem;
+}
+
+.attention-growth-proof strong {
+  font-size: 0.58rem;
+}
+
+.attention-growth-proof code {
+  color: var(--memory);
+  font-size: 0.48rem;
+}
+
+.attention-sources {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.6fr) minmax(0, 1.4fr);
+  gap: 22px;
+  padding: 20px 24px;
+  background: var(--surface);
+}
+
+.attention-sources > header {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+}
+
+.attention-sources > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+}
+
+.attention-sources a {
+  display: grid;
+  gap: 5px;
+  padding: 11px 12px;
+  border-right: 1px solid var(--line);
+  color: var(--text);
+  background: var(--surface-raised);
+  text-decoration: none;
+}
+
+.attention-sources a:last-child {
+  border-right: 0;
+}
+
+.attention-sources a:hover {
+  color: var(--collective);
+  background: var(--collective-soft);
+}
+
+.attention-sources a strong {
+  font-size: 0.54rem;
+}
+
+.attention-sources a span {
+  color: var(--text-soft);
+  font-size: 0.42rem;
+  line-height: 1.45;
+}
+
+.attention-project-note {
+  margin-top: 110px;
+}
+
+@media (max-width: 1220px) {
+  .attention-lab-header {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attention-controls fieldset:nth-child(2) {
+    border-right: 0;
+  }
+
+  .attention-controls fieldset:last-child {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line);
+  }
+
+  .attention-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-query-stage {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-cell-inspector {
+    display: grid;
+    grid-template-columns: 0.9fr repeat(5, 1fr);
+  }
+
+  .attention-cell-inspector > header,
+  .attention-cell-inspector > div {
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+  }
+
+  .attention-cell-inspector > div:last-child {
+    border-right: 0;
+  }
+
+  .attention-selected-flow {
+    grid-template-columns: 140px 20px minmax(0, 1fr) 20px 140px;
+  }
+}
+
+@media (max-width: 950px) {
+  .attention-operation-band {
+    grid-template-columns: 38px 1fr 1fr;
+  }
+
+  .attention-operation-band > span {
+    display: none;
+  }
+
+  .attention-operation-band > p {
+    grid-column: 2 / -1;
+  }
+
+  .attention-selected-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-flow-arrow {
+    transform: rotate(90deg);
+  }
+
+  .attention-query-card,
+  .attention-output-card {
+    min-height: 105px;
+  }
+
+  .attention-matrix-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-value-mix > div {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attention-value-mix article {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-mix-equals {
+    min-height: 50px;
+  }
+
+  .attention-value-mix article.attention-mix-result,
+  .attention-mix-equals {
+    grid-column: 1 / -1;
+  }
+
+  .attention-head-flow {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .attention-head-flow > svg {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .attention-heads {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .attention-heads > span,
+  .attention-heads > span:nth-child(even),
+  .attention-heads > span:nth-last-child(-n + 2) {
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+  }
+
+  .attention-heads > span:last-child {
+    border-right: 0;
+  }
+
+  .attention-sources {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .attention-lab {
+    width: calc(100% - 24px);
+  }
+
+  .attention-cell-inspector {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attention-cell-inspector > header,
+  .attention-cell-inspector > div {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-cell-inspector > :nth-child(even) {
+    border-right: 0;
+  }
+
+  .attention-cost-cards,
+  .attention-growth-proof {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-cost-cards article,
+  .attention-growth-proof > div,
+  .attention-growth-proof > p {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-cost-cards article:last-child,
+  .attention-growth-proof > p {
+    border-bottom: 0;
+  }
+
+  .attention-sources > div {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-sources a,
+  .attention-sources a:last-child {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-sources a:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .attention-lab {
+    margin-top: 40px;
+  }
+
+  .attention-lab-header {
+    padding: 55px 16px 16px;
+  }
+
+  .attention-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-controls fieldset,
+  .attention-controls fieldset:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-controls fieldset:last-child {
+    grid-column: auto;
+    border-top: 0;
+    border-bottom: 0;
+  }
+
+  .attention-operation-band {
+    grid-template-columns: 34px 1fr;
+    padding: 11px 12px;
+  }
+
+  .attention-operation-band > code,
+  .attention-operation-band > p {
+    grid-column: 1 / -1;
+  }
+
+  .attention-query-stage,
+  .attention-matrix-stage,
+  .attention-value-mix,
+  .attention-projection-stage,
+  .attention-head-stage,
+  .attention-cost-stage {
+    padding: 16px;
+  }
+
+  .attention-query-stage > header,
+  .attention-matrix-stage > header,
+  .attention-value-mix > header,
+  .attention-projection-stage > header,
+  .attention-head-stage > header,
+  .attention-cost-stage > header {
+    display: grid;
+  }
+
+  .attention-key-lanes {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attention-key-lanes > button:nth-child(2) {
+    border-right: 0;
+  }
+
+  .attention-key-lanes > button:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-role-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-role-legend > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-role-legend > div:last-child {
+    border-bottom: 0;
+  }
+
+  .attention-cell-inspector {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-cell-inspector > header,
+  .attention-cell-inspector > div,
+  .attention-cell-inspector > :nth-child(even) {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-cell-inspector > div:last-child {
+    border-bottom: 0;
+  }
+
+  .attention-value-mix > div {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-value-mix article,
+  .attention-value-mix article.attention-mix-result,
+  .attention-mix-equals {
+    grid-column: auto;
+  }
+
+  .attention-head-controls {
+    justify-self: start;
+  }
+
+  .attention-heads {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .attention-heads > span,
+  .attention-heads > span:nth-child(even),
+  .attention-heads > span:nth-last-child(-n + 2) {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .attention-heads > span:nth-child(even) {
+    border-right: 0;
+  }
+
+  .attention-heads > span:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .attention-sources {
+    padding: 18px 16px;
+  }
+}

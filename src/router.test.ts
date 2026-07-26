@@ -32,7 +32,11 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/training/adamw"), { kind: "topic", topicId: "adamw" });
   });
 
+  it("routes the Attention playground", () => {
+    assert.deepEqual(parseHash("#/model/attention"), { kind: "topic", topicId: "attention" });
+  });
+
   it("preserves unknown paths for the not-found view", () => {
-    assert.deepEqual(parseHash("#/model/attention"), { kind: "not-found", path: "/model/attention" });
+    assert.deepEqual(parseHash("#/model/transformer"), { kind: "not-found", path: "/model/transformer" });
   });
 });

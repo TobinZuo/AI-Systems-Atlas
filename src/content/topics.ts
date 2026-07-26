@@ -70,7 +70,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     icon: "circuitry",
     topics: [
       { id: "linear", title: "Linear", description: "矩阵乘法如何改变特征。", status: "mapped", prerequisites: ["embedding"] },
-      { id: "attention", title: "Attention", description: "Q、K、V 如何建立 token 关系。", status: "next", prerequisites: ["linear"] },
+      { id: "attention", title: "Attention", description: "固定一个 Query，逐步计算 QKᵀ、Scale、Mask、Softmax 与 Value 聚合。", status: "available", route: "/model/attention", prerequisites: ["linear"] },
       { id: "rope", title: "RoPE", description: "位置信息如何进入注意力。", status: "mapped", prerequisites: ["attention"] },
       { id: "rmsnorm", title: "RMSNorm", description: "为什么需要稳定激活尺度。", status: "mapped", prerequisites: ["linear"] },
       { id: "swiglu", title: "SwiGLU", description: "门控 MLP 如何扩展表达能力。", status: "mapped", prerequisites: ["linear"] },

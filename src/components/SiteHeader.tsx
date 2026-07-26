@@ -7,7 +7,7 @@ type Theme = "light" | "dark";
 
 interface SiteHeaderProps {
   theme: Theme;
-  current: "atlas" | "paths" | "autograd" | "gradient" | "adamw" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "memory-hierarchy" | "process-rank" | "collective" | "ring-allreduce" | "ddp" | "zero-1" | "fsdp" | "compare" | "other";
+  current: "atlas" | "paths" | "autograd" | "gradient" | "adamw" | "attention" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "memory-hierarchy" | "process-rank" | "collective" | "ring-allreduce" | "ddp" | "zero-1" | "fsdp" | "compare" | "other";
   onToggleTheme: () => void;
 }
 

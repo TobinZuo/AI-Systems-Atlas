@@ -41,6 +41,7 @@ FSDP
 ## What is included
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
+- An interactive Attention lab for QKV projection, pairwise scores, scaling, causal masking, row-wise Softmax, Value mixing, multi-head shapes, and quadratic context cost
 - An interactive Autograd lab for dynamic graph recording, saved tensors, reverse scheduling, leaf-gradient accumulation, and version-counter errors
 - An interactive Gradient lab for per-sample derivatives, batch reduction, `.grad` storage, finite-difference checks, optimizer direction, and DDP averaging
 - An interactive AdamW lab for moment history, bias correction, decoupled weight decay, parameter groups, CUDA execution, and distributed memory ownership
@@ -129,6 +130,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/training/autograd   Dynamic graph, backward scheduling, and leaf gradients
 #/training/gradient   Sample contributions, batch reduction, grad buffers, and DDP averaging
 #/training/adamw      AdamW moments, decay, parameter groups, HBM, and state sharding
+#/model/attention     QKV, scaled scores, masking, Softmax, Value mixing, and multi-head cost
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
 #/gpu/memory-hierarchy  dW tiling, on-chip reuse, cache semantics, and global-memory traffic
