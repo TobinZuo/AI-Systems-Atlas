@@ -146,6 +146,9 @@ export function ShardedOptimizerPlayground() {
       <DistributedHardwarePath
         snapshot={hardwareSnapshot}
         title={`Rank ${selectedRank}：${hardwareParameter.shortName} 的软件与硬件路径`}
+        worldSize={worldSize}
+        selectedRank={selectedRank}
+        onSelectRank={setSelectedRank}
       />
 
       <div className="parameter-selector" aria-label="选择参数">

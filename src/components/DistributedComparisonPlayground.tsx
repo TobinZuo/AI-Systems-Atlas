@@ -225,6 +225,7 @@ export function DistributedComparisonPlayground() {
           <DistributedHardwarePath
             snapshot={hardwareSnapshot}
             title={`${hardwareStrategyId === "zero-1" ? "ZeRO-1" : hardwareStrategyId.toUpperCase()}：${phaseOptions.find((phase) => phase.id === phaseId)!.label}的硬件路径`}
+            worldSize={worldSize}
           />
         </div>
       </section>

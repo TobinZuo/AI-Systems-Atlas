@@ -172,6 +172,9 @@ export function FSDPPlayground() {
       <DistributedHardwarePath
         snapshot={hardwareSnapshot}
         title={`${layer.shortName}：当前阶段的软件与硬件路径`}
+        worldSize={worldSize}
+        selectedRank={selectedRank}
+        onSelectRank={setSelectedRank}
       />
 
       <div className="row-tracker">

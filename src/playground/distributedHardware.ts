@@ -7,6 +7,36 @@ import type {
 
 export type ActiveCudaStream = "compute" | "comm" | "compute-then-comm" | "none";
 
+export type DistributedHardwarePattern =
+  | "idle"
+  | "local-all"
+  | "owner-compute"
+  | "broadcast"
+  | "all-gather"
+  | "reduce-scatter"
+  | "all-reduce"
+  | "compute-then-broadcast"
+  | "release";
+
+export type HardwareRankRole =
+  | "idle"
+  | "compute"
+  | "owner"
+  | "source"
+  | "receiver"
+  | "exchange"
+  | "reduce"
+  | "release";
+
+export interface HardwareRankView {
+  rank: number;
+  role: HardwareRankRole;
+  roleLabel: string;
+  stream: "compute" | "comm" | "compute-then-comm" | "none";
+  memoryLabel: string;
+  selected: boolean;
+}
+
 export interface DistributedHardwareSnapshot {
   operation: string;
   cpuCall: string;
@@ -19,6 +49,71 @@ export interface DistributedHardwareSnapshot {
   link: "NVLink / PCIe P2P" | "无链路传输";
   payload: string;
   explanation: string;
+  pattern: DistributedHardwarePattern;
+  sourceRank?: number;
+  ownerHbmObject?: string;
+  replicaHbmObject?: string;
+}
+
+export function distributedHardwareRankViews(
+  snapshot: DistributedHardwareSnapshot,
+  worldSize: number,
+  selectedRank: number,
+): HardwareRankView[] {
+  if (!Number.isInteger(worldSize) || worldSize < 1) {
+    throw new Error("worldSize must be a positive integer");
+  }
+
+  const sourceRank = Math.min(Math.max(snapshot.sourceRank ?? 0, 0), worldSize - 1);
+
+  return Array.from({ length: worldSize }, (_, rank): HardwareRankView => {
+    const selected = rank === selectedRank;
+
+    if (snapshot.pattern === "local-all") {
+      return { rank, role: "compute", roleLabel: "执行本地 kernel", stream: "compute", memoryLabel: snapshot.hbmObject, selected };
+    }
+    if (snapshot.pattern === "owner-compute") {
+      const owner = rank === sourceRank;
+      return {
+        rank,
+        role: owner ? "owner" : "idle",
+        roleLabel: owner ? "Owner 执行 AdamW" : `等待 Rank ${sourceRank}`,
+        stream: owner ? "compute" : "none",
+        memoryLabel: owner
+          ? snapshot.ownerHbmObject ?? snapshot.hbmObject
+          : snapshot.replicaHbmObject ?? "parameter replica + grad",
+        selected,
+      };
+    }
+    if (snapshot.pattern === "broadcast") {
+      const source = rank === sourceRank;
+      return {
+        rank,
+        role: source ? "source" : "receiver",
+        roleLabel: source ? "读取并发送新参数" : "接收并覆盖副本",
+        stream: "comm",
+        memoryLabel: source ? `source · ${snapshot.hbmObject}` : `destination · ${snapshot.hbmObject}`,
+        selected,
+      };
+    }
+    if (snapshot.pattern === "all-gather") {
+      return { rank, role: "exchange", roleLabel: "发送 shard，接收完整 W", stream: "comm", memoryLabel: `local shard + ${snapshot.hbmObject}`, selected };
+    }
+    if (snapshot.pattern === "reduce-scatter") {
+      return { rank, role: "reduce", roleLabel: "归约并保留 dW shard", stream: "comm", memoryLabel: `full local dW → ${snapshot.hbmObject}`, selected };
+    }
+    if (snapshot.pattern === "all-reduce") {
+      return { rank, role: "reduce", roleLabel: "发送、接收并归约梯度", stream: "comm", memoryLabel: snapshot.hbmObject, selected };
+    }
+    if (snapshot.pattern === "compute-then-broadcast") {
+      return { rank, role: "exchange", roleLabel: "更新 owner 参数并交换", stream: "compute-then-comm", memoryLabel: snapshot.hbmObject, selected };
+    }
+    if (snapshot.pattern === "release") {
+      return { rank, role: "release", roleLabel: "释放临时完整 buffer", stream: "none", memoryLabel: snapshot.hbmObject, selected };
+    }
+
+    return { rank, role: "idle", roleLabel: "保持当前显存状态", stream: "none", memoryLabel: snapshot.hbmObject, selected };
+  });
 }
 
 export function shardedOptimizerHardwareSnapshot(
@@ -41,6 +136,10 @@ export function shardedOptimizerHardwareSnapshot(
       link: "无链路传输",
       payload: ownsParameter ? `Rank ${selectedRank} 写回 ${parameterName}` : `等待 Rank ${owner} 的新值`,
       explanation: "Optimizer step 仍是 GPU 计算。只不过每个 rank 的本地 optimizer 只持有一部分参数。",
+      pattern: "owner-compute",
+      sourceRank: owner,
+      ownerHbmObject: `${parameterName} + grad + m + v`,
+      replicaHbmObject: `${parameterName} replica + grad`,
     };
   }
 
@@ -58,6 +157,8 @@ export function shardedOptimizerHardwareSnapshot(
       link: "NVLink / PCIe P2P",
       payload: `${parameterName}：Rank ${owner} → 其余 ranks`,
       explanation: "CPU 只负责入队。真正的数据搬运由 comm stream 上的 NCCL kernel 和 GPU 互连完成。",
+      pattern: "broadcast",
+      sourceRank: owner,
     };
   }
 
@@ -73,6 +174,7 @@ export function shardedOptimizerHardwareSnapshot(
     link: "无链路传输",
     payload: phase.kind === "ready" ? "完整 parameter + grad" : "一致的 parameter replicas",
     explanation: phase.explanation,
+    pattern: "idle",
   };
 }
 
@@ -94,6 +196,7 @@ export function fsdpHardwareSnapshot(
       link: "NVLink / PCIe P2P",
       payload: `${layerName} weight shards`,
       explanation: "只有当前层被展开。其他层仍然只保留各自 shard。",
+      pattern: "all-gather",
     };
   }
 
@@ -111,6 +214,7 @@ export function fsdpHardwareSnapshot(
       link: "无链路传输",
       payload: backward ? "activation、dY、W → dW" : "activation、W → output",
       explanation: "All-Gather 完成后才允许 compute stream 使用完整权重，CUDA event 负责建立依赖。",
+      pattern: "local-all",
     };
   }
 
@@ -127,6 +231,7 @@ export function fsdpHardwareSnapshot(
       link: "NVLink / PCIe P2P",
       payload: `${layerName} full local dW → averaged dW shards`,
       explanation: "归约和切分合成一个 collective，避免先得到每卡完整 global dW。",
+      pattern: "reduce-scatter",
     };
   }
 
@@ -143,6 +248,7 @@ export function fsdpHardwareSnapshot(
       link: "无链路传输",
       payload: "local W shard + dW shard → updated W shard",
       explanation: "下一次计算需要该层时，再用 All-Gather 临时重建完整权重。",
+      pattern: "local-all",
     };
   }
 
@@ -159,6 +265,7 @@ export function fsdpHardwareSnapshot(
       link: "无链路传输",
       payload: "full W buffer released",
       explanation: "FSDP 的峰值显存不仅由分片比例决定，也由完整 buffer 在 HBM 中存活多久决定。",
+      pattern: "release",
     };
   }
 
@@ -174,6 +281,7 @@ export function fsdpHardwareSnapshot(
     link: "无链路传输",
     payload: "local weight shard",
     explanation: "完整参数此刻不存在于任何单张 GPU。",
+    pattern: "idle",
   };
 }
 
@@ -195,6 +303,7 @@ export function comparisonHardwareSnapshot(
         link: "NVLink / PCIe P2P",
         payload: "gradient chunks",
         explanation: "参数始终在本地，DDP 的模型状态通信主要发生在梯度路径。",
+        pattern: "all-reduce",
       };
     }
     if (phase === "optimizer-step") {
@@ -210,6 +319,7 @@ export function comparisonHardwareSnapshot(
         link: "无链路传输",
         payload: "full local optimizer state",
         explanation: "梯度同步后输入相同，所以无需再广播参数。",
+        pattern: "local-all",
       };
     }
   }
@@ -228,6 +338,7 @@ export function comparisonHardwareSnapshot(
         link: "NVLink / PCIe P2P",
         payload: "updated parameter shards",
         explanation: "同一个进程提交计算和通信，CUDA event 与 stream 顺序保证先更新再发送。",
+        pattern: "compute-then-broadcast",
       };
     }
     if (phase === "gradient-sync") {
@@ -246,6 +357,7 @@ export function comparisonHardwareSnapshot(
         link: "无链路传输",
         payload: "activation + full W → output",
         explanation: "ZeRO-1 在 optimizer step 末尾恢复了完整参数副本，所以 forward 路径仍像 DDP。",
+        pattern: "local-all",
       };
     }
   }
@@ -264,6 +376,7 @@ export function comparisonHardwareSnapshot(
         link: "NVLink / PCIe P2P",
         payload: "gradient shards",
         explanation: "通信结果直接匹配本地参数 shard，不需要完整 global dW。",
+        pattern: "reduce-scatter",
       };
     }
     if (phase === "optimizer-step") {
@@ -279,6 +392,7 @@ export function comparisonHardwareSnapshot(
         link: "无链路传输",
         payload: "local optimizer shards",
         explanation: "参数在下一层计算前才会临时 All-Gather。",
+        pattern: "local-all",
       };
     }
     if (phase === "next-forward") {
@@ -294,6 +408,7 @@ export function comparisonHardwareSnapshot(
         link: "NVLink / PCIe P2P",
         payload: "weight shards",
         explanation: "FSDP 用额外参数通信换取长期显存下降。",
+        pattern: "all-gather",
       };
     }
   }
@@ -311,6 +426,7 @@ export function comparisonHardwareSnapshot(
       link: "无链路传输",
       payload: "activation + full W → output",
       explanation: "DDP 不需要为 forward 重建参数，通信主要隐藏在 backward 的梯度同步里。",
+      pattern: "local-all",
     };
   }
 
@@ -326,5 +442,6 @@ export function comparisonHardwareSnapshot(
     link: "无链路传输",
     payload: "persistent model state",
     explanation: "训练性能还取决于 activation、临时 buffer、分桶和通信重叠，这里只聚焦模型状态。",
+    pattern: "idle",
   };
 }
