@@ -23,11 +23,16 @@ import { DistributedHardwarePath } from "./DistributedHardwarePath";
 
 const formatValue = (value: number) => value.toFixed(4);
 
-export function ShardedOptimizerPlayground() {
+export function ShardedOptimizerPlayground({
+  phaseIndex,
+  onPhaseIndexChange,
+}: {
+  phaseIndex: number;
+  onPhaseIndexChange: (phaseIndex: number) => void;
+}) {
   const [worldSize, setWorldSize] = useState(2);
   const [selectedRank, setSelectedRank] = useState(0);
   const [selectedParameterId, setSelectedParameterId] = useState("tied-weight");
-  const [phaseIndex, setPhaseIndex] = useState(0);
 
   const phase = shardedOptimizerPhases[phaseIndex];
   const selectedParameter = shardedOptimizerParameters.find(
@@ -47,17 +52,16 @@ export function ShardedOptimizerPlayground() {
     phase,
     hardwareParameter.name,
     hardwareOwner,
-    selectedRank,
   );
 
   const changeWorldSize = (nextWorldSize: number) => {
     setWorldSize(nextWorldSize);
     setSelectedRank((rank) => Math.min(rank, nextWorldSize - 1));
-    setPhaseIndex(0);
+    onPhaseIndexChange(0);
   };
 
   const movePhase = (delta: number) => {
-    setPhaseIndex((index) => Math.max(0, Math.min(shardedOptimizerPhases.length - 1, index + delta)));
+    onPhaseIndexChange(Math.max(0, Math.min(shardedOptimizerPhases.length - 1, phaseIndex + delta)));
   };
 
   return (
@@ -98,7 +102,7 @@ export function ShardedOptimizerPlayground() {
         </div>
 
         <div className="phase-stepper">
-          <button type="button" onClick={() => setPhaseIndex(0)} aria-label="重置到梯度同步完成">
+          <button type="button" onClick={() => onPhaseIndexChange(0)} aria-label="重置到梯度同步完成">
             <ArrowCounterClockwise size={16} />
           </button>
           <button type="button" onClick={() => movePhase(-1)} disabled={phaseIndex === 0} aria-label="上一步">
@@ -118,7 +122,7 @@ export function ShardedOptimizerPlayground() {
             role="tab"
             aria-selected={phaseIndex === index}
             className={phaseIndex === index ? "is-active" : index < phaseIndex ? "is-complete" : ""}
-            onClick={() => setPhaseIndex(index)}
+            onClick={() => onPhaseIndexChange(index)}
             key={item.id}
           >
             <span>{item.compactLabel}</span>
@@ -144,6 +148,7 @@ export function ShardedOptimizerPlayground() {
       </div>
 
       <DistributedHardwarePath
+        id="zero-hardware-stage"
         snapshot={hardwareSnapshot}
         title={`Rank ${selectedRank}：${hardwareParameter.shortName} 的软件与硬件路径`}
         worldSize={worldSize}

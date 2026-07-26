@@ -6,7 +6,9 @@ import { Lightning } from "@phosphor-icons/react/Lightning";
 import { Network } from "@phosphor-icons/react/Network";
 import { Stack } from "@phosphor-icons/react/Stack";
 import {
+  distributedHardwareDataFlow,
   distributedHardwareRankViews,
+  type HardwareMemoryState,
   type DistributedHardwareSnapshot,
 } from "../playground/distributedHardware";
 
@@ -22,13 +24,26 @@ const patternLabels: Record<DistributedHardwareSnapshot["pattern"], string> = {
   release: "每张 GPU 释放临时完整 buffer",
 };
 
+const memoryStateLabels: Record<HardwareMemoryState, string> = {
+  resident: "驻留",
+  read: "读取",
+  write: "写回",
+  send: "发送",
+  receive: "接收",
+  stale: "等待覆盖",
+  absent: "不存在",
+  release: "释放",
+};
+
 export function DistributedHardwarePath({
+  id,
   snapshot,
   title = "这一步如何落到硬件",
   worldSize = 4,
   selectedRank = 0,
   onSelectRank,
 }: {
+  id?: string;
   snapshot: DistributedHardwareSnapshot;
   title?: string;
   worldSize?: number;
@@ -36,28 +51,78 @@ export function DistributedHardwarePath({
   onSelectRank?: (rank: number) => void;
 }) {
   const communicationActive = snapshot.activeStream === "comm" || snapshot.activeStream === "compute-then-comm";
-  const computeActive = snapshot.activeStream === "compute" || snapshot.activeStream === "compute-then-comm";
   const rankViews = distributedHardwareRankViews(snapshot, worldSize, selectedRank);
+  const selectedRankView = rankViews.find((rank) => rank.rank === selectedRank) ?? rankViews[0];
+  const selectedCommunicationActive = selectedRankView.stream === "comm" || selectedRankView.stream === "compute-then-comm";
+  const selectedComputeActive = selectedRankView.stream === "compute" || selectedRankView.stream === "compute-then-comm";
+  const selectedOperationActive = selectedRankView.stream !== "none";
+  const selectedKernel = snapshot.pattern === "owner-compute" && selectedRankView.role !== "owner"
+    ? "这个 Rank 不更新所选参数"
+    : snapshot.kernel;
+  const dataFlow = distributedHardwareDataFlow(snapshot, worldSize);
+
+  const renderRanks = (ranks: number[]) => (
+    <div className="hardware-endpoint-ranks">
+      {ranks.length > 0
+        ? ranks.map((rank) => <i className={rank === selectedRank ? "is-selected" : ""} key={rank}>R{rank}</i>)
+        : <i>无远端接收者</i>}
+    </div>
+  );
 
   return (
-    <section className={`distributed-hardware-path stream-${snapshot.activeStream}`} aria-label={title}>
+    <section className={`distributed-hardware-path stream-${snapshot.activeStream}`} id={id} aria-label={title}>
       <header>
         <div>
-          <span>Operation drill-down</span>
+          <span>Hardware execution stage</span>
           <h3>{title}</h3>
           <p>{snapshot.operation}</p>
         </div>
         <code>{snapshot.payload}</code>
       </header>
 
+      <section className={`hardware-data-journey${dataFlow.communication ? " is-communication" : " is-local"}${snapshot.pattern === "idle" ? " is-idle" : ""}${snapshot.pattern === "release" ? " is-release" : ""}`} aria-label="真实 Tensor 数据路径">
+        <header>
+          <div><span>真实 Tensor 数据路径</span><strong>从源 HBM 到目标 HBM</strong></div>
+          <small>{snapshot.pattern === "idle" ? "当前没有数据搬运。页面显示各 Rank 此刻真实驻留的状态，以及下一次操作的输入。" : "CPU 提交的是操作与显存地址，GPU kernel 真正读取、搬运并写回地址指向的 Tensor 字节。"}</small>
+        </header>
+        <div className="hardware-data-journey-scroll">
+          <div className="hardware-data-flow-track" key={`${snapshot.operation}-${snapshot.payload}`}>
+            <article className="hardware-data-endpoint endpoint-source">
+              <span><Database size={16} weight="duotone" aria-hidden="true" />源 HBM</span>
+              {renderRanks(dataFlow.sourceRanks)}
+              <strong>{dataFlow.sourceObject}</strong>
+              <small>{snapshot.pattern === "idle" ? "当前长期驻留的显存对象" : "kernel 从这些显存对象读取输入"}</small>
+            </article>
+
+            <div className="hardware-data-arrow" aria-hidden="true"><ArrowRight size={17} /><i /></div>
+
+            <article className="hardware-data-operator">
+              <span><Stack size={16} weight="duotone" aria-hidden="true" />{dataFlow.communication ? "集合通信执行" : "本地 GPU 执行"}</span>
+              <strong>{dataFlow.operator}</strong>
+              <small>{dataFlow.operatorDetail}</small>
+              <code>{dataFlow.transport}</code>
+            </article>
+
+            <div className="hardware-data-arrow" aria-hidden="true"><ArrowRight size={17} /><i /></div>
+
+            <article className="hardware-data-endpoint endpoint-destination">
+              <span><Database size={16} weight="duotone" aria-hidden="true" />目标 HBM</span>
+              {renderRanks(dataFlow.destinationRanks)}
+              <strong>{dataFlow.destinationObject}</strong>
+              <small>{snapshot.pattern === "idle" ? "下一次操作会把状态推进到这里" : "结果直接写入目标显存 buffer"}</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className={`distributed-rank-stage pattern-${snapshot.pattern}`} aria-label="多 Rank 与 GPU 的全局执行现场">
         <header>
-          <div><span>Global Rank / GPU scene</span><strong>{patternLabels[snapshot.pattern]}</strong></div>
+          <div><span>全局 Rank / GPU 现场</span><strong>{patternLabels[snapshot.pattern]}</strong></div>
           <small>逻辑 collective 视图。真实 NCCL 会按拓扑选择 Ring、Tree 或其他实现。</small>
         </header>
 
         <div className="distributed-rank-stage-scroll">
-          <div className="distributed-rank-grid" style={{ gridTemplateColumns: `repeat(${worldSize}, minmax(190px, 1fr))` }}>
+          <div className="distributed-rank-grid" style={{ gridTemplateColumns: `repeat(${worldSize}, minmax(220px, 1fr))` }}>
             {rankViews.map((rankView) => {
               const rankBody = (
                 <>
@@ -74,7 +139,17 @@ export function DistributedHardwarePath({
                     <i className={rankView.stream === "compute" || rankView.stream === "compute-then-comm" ? "is-active" : ""}>Compute</i>
                     <i className={rankView.stream === "comm" || rankView.stream === "compute-then-comm" ? "is-active" : ""}>Comm</i>
                   </div>
-                  <div className="distributed-rank-memory"><Database size={14} weight="duotone" aria-hidden="true" /><span><b>HBM</b><code>{rankView.memoryLabel}</code></span></div>
+                  <div className="distributed-rank-memory">
+                    <div className="distributed-rank-memory-title"><Database size={14} weight="duotone" aria-hidden="true" /><b>GPU HBM</b></div>
+                    <div className="distributed-rank-memory-slots">
+                      {rankView.memorySlots.map((slot, index) => (
+                        <div className={`memory-state-${slot.state}`} key={`${slot.label}-${index}`}>
+                          <span><strong>{slot.label}</strong><small>{memoryStateLabels[slot.state]}</small></span>
+                          <code>{slot.detail}</code>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                   <footer>{rankView.roleLabel}</footer>
                 </article>
               );
@@ -91,8 +166,8 @@ export function DistributedHardwarePath({
       </section>
 
       <div className="hardware-cutaway-label">
-        <span>Selected Rank cutaway</span>
-        <strong>Rank {selectedRank} 内部调用链</strong>
+        <span>选中 Rank 的内部剖面</span>
+        <strong>Rank {selectedRank}：{selectedRankView.roleLabel}</strong>
       </div>
 
       <div className="hardware-path-scroll">
@@ -104,35 +179,35 @@ export function DistributedHardwarePath({
           </article>
           <ArrowRight className="hardware-path-arrow" size={16} aria-hidden="true" />
 
-          <article className={`hardware-path-node hardware-path-stream${snapshot.activeStream !== "none" ? " is-active" : ""}`}>
+          <article className={`hardware-path-node hardware-path-stream${selectedOperationActive ? " is-active" : ""}`}>
             <span><Lightning size={17} weight="duotone" aria-hidden="true" />CUDA Streams</span>
             <div className="hardware-stream-pair">
-              <i className={computeActive ? "is-active" : ""}>Compute stream</i>
-              <i className={communicationActive ? "is-active" : ""}>Comm stream</i>
+              <i className={selectedComputeActive ? "is-active" : ""}>Compute stream</i>
+              <i className={selectedCommunicationActive ? "is-active" : ""}>Comm stream</i>
             </div>
             <small>同一 GPU 上的两条任务队列</small>
           </article>
           <ArrowRight className="hardware-path-arrow" size={16} aria-hidden="true" />
 
-          <article className={`hardware-path-node hardware-path-kernel${snapshot.activeStream !== "none" ? " is-active" : ""}`}>
+          <article className={`hardware-path-node hardware-path-kernel${selectedOperationActive ? " is-active" : ""}`}>
             <span><Stack size={17} weight="duotone" aria-hidden="true" />GPU SM</span>
-            <strong>{snapshot.kernel}</strong>
-            <small>{snapshot.kernelDetail}</small>
+            <strong>{selectedKernel}</strong>
+            <small>{selectedOperationActive ? snapshot.kernelDetail : selectedRankView.roleLabel}</small>
           </article>
           <ArrowRight className="hardware-path-arrow" size={16} aria-hidden="true" />
 
           <article className="hardware-path-node hardware-path-hbm is-active">
             <span><Database size={17} weight="duotone" aria-hidden="true" />GPU HBM</span>
-            <strong>{snapshot.hbmObject}</strong>
+            <strong>{selectedRankView.memoryLabel}</strong>
             <small>{snapshot.hbmDetail}</small>
           </article>
-          <ArrowRight className={`hardware-path-arrow${communicationActive ? " is-active" : ""}`} size={16} aria-hidden="true" />
+          <ArrowRight className={`hardware-path-arrow${selectedCommunicationActive ? " is-active" : ""}`} size={16} aria-hidden="true" />
 
-          <article className={`hardware-path-node hardware-path-link${communicationActive ? " is-active" : ""}`}>
+          <article className={`hardware-path-node hardware-path-link${selectedCommunicationActive ? " is-active" : ""}`}>
             <span><Network size={17} weight="duotone" aria-hidden="true" />GPU 互连</span>
             <strong>{snapshot.link}</strong>
-            <small>{communicationActive ? "单机 collective 的字节传输路径" : "这一步只访问本卡显存"}</small>
-            {communicationActive && <i className="hardware-data-packet" aria-hidden="true" />}
+            <small>{selectedCommunicationActive ? "单机 collective 的字节传输路径" : "这个 Rank 在此刻不经过 GPU 互连"}</small>
+            {selectedCommunicationActive && <i className="hardware-data-packet" aria-hidden="true" />}
           </article>
         </div>
       </div>

@@ -1,11 +1,15 @@
 import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { HardDrives } from "@phosphor-icons/react/HardDrives";
 import { Play } from "@phosphor-icons/react/Play";
+import { useState } from "react";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { FSDPPlayground } from "./FSDPPlayground";
 import { scrollToSection } from "./scrollToSection";
 
 export function FSDPTopicPage() {
+  const [phaseIndex, setPhaseIndex] = useState(0);
+
   return (
     <main id="top">
       <section className="topic-hero compact-topic-hero">
@@ -38,12 +42,15 @@ export function FSDPTopicPage() {
 
         <div className="topic-hero-actions">
           <a className="back-to-atlas" href="#/"><ArrowLeft size={16} />返回知识地图</a>
-          <button type="button" className="primary-action" onClick={() => scrollToSection("fsdp-playground")}><Play size={17} weight="fill" aria-hidden="true" />观察参数生命周期</button>
+          <div className="topic-action-cluster">
+            <button type="button" className="secondary-action" onClick={() => { setPhaseIndex(0); scrollToSection("fsdp-playground"); }}><Play size={17} weight="fill" aria-hidden="true" />从头执行</button>
+            <button type="button" className="primary-action" onClick={() => { setPhaseIndex(1); scrollToSection("fsdp-hardware-stage"); }}><HardDrives size={17} weight="fill" aria-hidden="true" />直接看硬件</button>
+          </div>
         </div>
       </section>
 
       <DistributedTopicSwitcher current="fsdp" />
-      <FSDPPlayground />
+      <FSDPPlayground phaseIndex={phaseIndex} onPhaseIndexChange={setPhaseIndex} />
 
       <section className="project-note distributed-project-note">
         <div>

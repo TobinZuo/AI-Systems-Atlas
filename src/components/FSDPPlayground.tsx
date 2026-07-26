@@ -22,13 +22,18 @@ import { fsdpHardwareSnapshot } from "../playground/distributedHardware";
 import { formatBytes } from "../playground/shardedOptimizer";
 import { DistributedHardwarePath } from "./DistributedHardwarePath";
 
-export function FSDPPlayground() {
+export function FSDPPlayground({
+  phaseIndex,
+  onPhaseIndexChange,
+}: {
+  phaseIndex: number;
+  onPhaseIndexChange: (phaseIndex: number) => void;
+}) {
   const [worldSize, setWorldSize] = useState(2);
   const [computeDtype, setComputeDtype] = useState<ComputeDtype>("fp32");
   const [layerId, setLayerId] = useState("embedding");
   const [selectedRank, setSelectedRank] = useState(0);
   const [selectedRow, setSelectedRow] = useState(0);
-  const [phaseIndex, setPhaseIndex] = useState(0);
 
   const layer = fsdpLayers.find((item) => item.id === layerId)!;
   const phase = fsdpPhases[phaseIndex];
@@ -48,18 +53,18 @@ export function FSDPPlayground() {
   const changeWorldSize = (nextWorldSize: number) => {
     setWorldSize(nextWorldSize);
     setSelectedRank((rank) => Math.min(rank, nextWorldSize - 1));
-    setPhaseIndex(0);
+    onPhaseIndexChange(0);
   };
 
   const changeLayer = (nextLayerId: string) => {
     const nextLayer = fsdpLayers.find((item) => item.id === nextLayerId)!;
     setLayerId(nextLayerId);
     setSelectedRow((row) => Math.min(row, nextLayer.rows - 1));
-    setPhaseIndex(0);
+    onPhaseIndexChange(0);
   };
 
   const movePhase = (delta: number) => {
-    setPhaseIndex((index) => Math.max(0, Math.min(fsdpPhases.length - 1, index + delta)));
+    onPhaseIndexChange(Math.max(0, Math.min(fsdpPhases.length - 1, phaseIndex + delta)));
   };
 
   const operationName = phase.stage === "all-gather"
@@ -113,7 +118,7 @@ export function FSDPPlayground() {
         </div>
 
         <div className="phase-stepper">
-          <button type="button" onClick={() => setPhaseIndex(0)} aria-label="重置参数生命周期"><ArrowCounterClockwise size={16} /></button>
+          <button type="button" onClick={() => onPhaseIndexChange(0)} aria-label="重置参数生命周期"><ArrowCounterClockwise size={16} /></button>
           <button type="button" onClick={() => movePhase(-1)} disabled={phaseIndex === 0} aria-label="上一步"><CaretLeft size={16} /></button>
           <span><strong>{phase.label}</strong><small>{phaseIndex + 1} / {fsdpPhases.length}</small></span>
           <button type="button" onClick={() => movePhase(1)} disabled={phaseIndex === fsdpPhases.length - 1} aria-label="下一步"><CaretRight size={16} /></button>
@@ -147,7 +152,7 @@ export function FSDPPlayground() {
             role="tab"
             aria-selected={phaseIndex === index}
             className={phaseIndex === index ? "is-active" : index < phaseIndex ? "is-complete" : ""}
-            onClick={() => setPhaseIndex(index)}
+            onClick={() => onPhaseIndexChange(index)}
             key={item.id}
           ><span>{item.compactLabel}</span><small>{item.pass}</small></button>
         ))}
@@ -170,6 +175,7 @@ export function FSDPPlayground() {
       </div>
 
       <DistributedHardwarePath
+        id="fsdp-hardware-stage"
         snapshot={hardwareSnapshot}
         title={`${layer.shortName}：当前阶段的软件与硬件路径`}
         worldSize={worldSize}

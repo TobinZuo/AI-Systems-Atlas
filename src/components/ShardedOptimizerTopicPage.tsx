@@ -1,11 +1,15 @@
 import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { HardDrives } from "@phosphor-icons/react/HardDrives";
 import { Play } from "@phosphor-icons/react/Play";
+import { useState } from "react";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { ShardedOptimizerPlayground } from "./ShardedOptimizerPlayground";
 import { scrollToSection } from "./scrollToSection";
 
 export function ShardedOptimizerTopicPage() {
+  const [phaseIndex, setPhaseIndex] = useState(0);
+
   return (
     <main id="top">
       <section className="topic-hero compact-topic-hero">
@@ -38,12 +42,15 @@ export function ShardedOptimizerTopicPage() {
 
         <div className="topic-hero-actions">
           <a className="back-to-atlas" href="#/"><ArrowLeft size={16} />返回知识地图</a>
-          <button type="button" className="primary-action" onClick={() => scrollToSection("sharded-optimizer-playground")}><Play size={17} weight="fill" aria-hidden="true" />开始逐步执行</button>
+          <div className="topic-action-cluster">
+            <button type="button" className="secondary-action" onClick={() => { setPhaseIndex(0); scrollToSection("sharded-optimizer-playground"); }}><Play size={17} weight="fill" aria-hidden="true" />从头执行</button>
+            <button type="button" className="primary-action" onClick={() => { setPhaseIndex(2); scrollToSection("zero-hardware-stage"); }}><HardDrives size={17} weight="fill" aria-hidden="true" />直接看硬件</button>
+          </div>
         </div>
       </section>
 
       <DistributedTopicSwitcher current="zero-1" />
-      <ShardedOptimizerPlayground />
+      <ShardedOptimizerPlayground phaseIndex={phaseIndex} onPhaseIndexChange={setPhaseIndex} />
 
       <section className="project-note distributed-project-note">
         <div>

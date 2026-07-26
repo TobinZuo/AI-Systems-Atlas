@@ -28,13 +28,41 @@ export type HardwareRankRole =
   | "reduce"
   | "release";
 
+export type HardwareMemoryState =
+  | "resident"
+  | "read"
+  | "write"
+  | "send"
+  | "receive"
+  | "stale"
+  | "absent"
+  | "release";
+
+export interface HardwareMemorySlot {
+  label: string;
+  detail: string;
+  state: HardwareMemoryState;
+}
+
 export interface HardwareRankView {
   rank: number;
   role: HardwareRankRole;
   roleLabel: string;
   stream: "compute" | "comm" | "compute-then-comm" | "none";
   memoryLabel: string;
+  memorySlots: HardwareMemorySlot[];
   selected: boolean;
+}
+
+export interface DistributedHardwareDataFlow {
+  sourceRanks: number[];
+  sourceObject: string;
+  operator: string;
+  operatorDetail: string;
+  destinationRanks: number[];
+  destinationObject: string;
+  transport: string;
+  communication: boolean;
 }
 
 export interface DistributedHardwareSnapshot {
@@ -53,6 +81,47 @@ export interface DistributedHardwareSnapshot {
   sourceRank?: number;
   ownerHbmObject?: string;
   replicaHbmObject?: string;
+  sourceObject?: string;
+  destinationObject?: string;
+  memoryByRole?: Partial<Record<HardwareRankRole, HardwareMemorySlot[]>>;
+}
+
+function memorySlotsForRole(
+  snapshot: DistributedHardwareSnapshot,
+  role: HardwareRankRole,
+  fallbackLabel: string,
+): HardwareMemorySlot[] {
+  return snapshot.memoryByRole?.[role] ?? [
+    { label: "当前 buffer", detail: fallbackLabel, state: "resident" },
+  ];
+}
+
+export function distributedHardwareDataFlow(
+  snapshot: DistributedHardwareSnapshot,
+  worldSize: number,
+): DistributedHardwareDataFlow {
+  if (!Number.isInteger(worldSize) || worldSize < 1) {
+    throw new Error("worldSize must be a positive integer");
+  }
+
+  const allRanks = Array.from({ length: worldSize }, (_, rank) => rank);
+  const sourceRank = Math.min(Math.max(snapshot.sourceRank ?? 0, 0), worldSize - 1);
+  const communication = snapshot.activeStream === "comm" || snapshot.activeStream === "compute-then-comm";
+  const ownerOnly = snapshot.pattern === "owner-compute";
+  const broadcast = snapshot.pattern === "broadcast";
+
+  return {
+    sourceRanks: ownerOnly || broadcast ? [sourceRank] : allRanks,
+    sourceObject: snapshot.sourceObject ?? snapshot.hbmObject,
+    operator: snapshot.kernel,
+    operatorDetail: snapshot.activeStream === "none"
+      ? "没有新的 GPU kernel 入队"
+      : `${snapshot.activeStream === "comm" ? "Comm stream" : snapshot.activeStream === "compute" ? "Compute stream" : "Compute stream 后接 Comm stream"}：${snapshot.kernelDetail}`,
+    destinationRanks: broadcast ? allRanks.filter((rank) => rank !== sourceRank) : ownerOnly ? [sourceRank] : allRanks,
+    destinationObject: snapshot.destinationObject ?? snapshot.hbmObject,
+    transport: communication ? snapshot.link : snapshot.activeStream === "compute" ? "GPU memory fabric" : "本卡 HBM 状态变化",
+    communication,
+  };
 }
 
 export function distributedHardwareRankViews(
@@ -70,7 +139,8 @@ export function distributedHardwareRankViews(
     const selected = rank === selectedRank;
 
     if (snapshot.pattern === "local-all") {
-      return { rank, role: "compute", roleLabel: "执行本地 kernel", stream: "compute", memoryLabel: snapshot.hbmObject, selected };
+      const role = "compute";
+      return { rank, role, roleLabel: "执行本地 kernel", stream: "compute", memoryLabel: snapshot.hbmObject, memorySlots: memorySlotsForRole(snapshot, role, snapshot.hbmObject), selected };
     }
     if (snapshot.pattern === "owner-compute") {
       const owner = rank === sourceRank;
@@ -82,6 +152,11 @@ export function distributedHardwareRankViews(
         memoryLabel: owner
           ? snapshot.ownerHbmObject ?? snapshot.hbmObject
           : snapshot.replicaHbmObject ?? "parameter replica + grad",
+        memorySlots: memorySlotsForRole(
+          snapshot,
+          owner ? "owner" : "idle",
+          owner ? snapshot.ownerHbmObject ?? snapshot.hbmObject : snapshot.replicaHbmObject ?? "parameter replica + grad",
+        ),
         selected,
       };
     }
@@ -93,26 +168,33 @@ export function distributedHardwareRankViews(
         roleLabel: source ? "读取并发送新参数" : "接收并覆盖副本",
         stream: "comm",
         memoryLabel: source ? `source · ${snapshot.hbmObject}` : `destination · ${snapshot.hbmObject}`,
+        memorySlots: memorySlotsForRole(snapshot, source ? "source" : "receiver", snapshot.hbmObject),
         selected,
       };
     }
     if (snapshot.pattern === "all-gather") {
-      return { rank, role: "exchange", roleLabel: "发送 shard，接收完整 W", stream: "comm", memoryLabel: `local shard + ${snapshot.hbmObject}`, selected };
+      const role = "exchange";
+      return { rank, role, roleLabel: "发送 shard，接收完整 W", stream: "comm", memoryLabel: `local shard + ${snapshot.hbmObject}`, memorySlots: memorySlotsForRole(snapshot, role, `local shard + ${snapshot.hbmObject}`), selected };
     }
     if (snapshot.pattern === "reduce-scatter") {
-      return { rank, role: "reduce", roleLabel: "归约并保留 dW shard", stream: "comm", memoryLabel: `full local dW → ${snapshot.hbmObject}`, selected };
+      const role = "reduce";
+      return { rank, role, roleLabel: "归约并保留 dW shard", stream: "comm", memoryLabel: `full local dW → ${snapshot.hbmObject}`, memorySlots: memorySlotsForRole(snapshot, role, `full local dW → ${snapshot.hbmObject}`), selected };
     }
     if (snapshot.pattern === "all-reduce") {
-      return { rank, role: "reduce", roleLabel: "发送、接收并归约梯度", stream: "comm", memoryLabel: snapshot.hbmObject, selected };
+      const role = "reduce";
+      return { rank, role, roleLabel: "发送、接收并归约梯度", stream: "comm", memoryLabel: snapshot.hbmObject, memorySlots: memorySlotsForRole(snapshot, role, snapshot.hbmObject), selected };
     }
     if (snapshot.pattern === "compute-then-broadcast") {
-      return { rank, role: "exchange", roleLabel: "更新 owner 参数并交换", stream: "compute-then-comm", memoryLabel: snapshot.hbmObject, selected };
+      const role = "exchange";
+      return { rank, role, roleLabel: "更新 owner 参数并交换", stream: "compute-then-comm", memoryLabel: snapshot.hbmObject, memorySlots: memorySlotsForRole(snapshot, role, snapshot.hbmObject), selected };
     }
     if (snapshot.pattern === "release") {
-      return { rank, role: "release", roleLabel: "释放临时完整 buffer", stream: "none", memoryLabel: snapshot.hbmObject, selected };
+      const role = "release";
+      return { rank, role, roleLabel: "释放临时完整 buffer", stream: "none", memoryLabel: snapshot.hbmObject, memorySlots: memorySlotsForRole(snapshot, role, snapshot.hbmObject), selected };
     }
 
-    return { rank, role: "idle", roleLabel: "保持当前显存状态", stream: "none", memoryLabel: snapshot.hbmObject, selected };
+    const role = "idle";
+    return { rank, role, roleLabel: "保持当前显存状态", stream: "none", memoryLabel: snapshot.hbmObject, memorySlots: memorySlotsForRole(snapshot, role, snapshot.hbmObject), selected };
   });
 }
 
@@ -120,45 +202,68 @@ export function shardedOptimizerHardwareSnapshot(
   phase: ShardedOptimizerPhase,
   parameterName: string,
   owner: number,
-  selectedRank: number,
 ): DistributedHardwareSnapshot {
   if (phase.kind === "owner-update") {
-    const ownsParameter = owner === selectedRank;
     return {
-      operation: ownsParameter ? "Owner 本地更新" : "等待其他 owner 更新",
+      operation: `Rank ${owner} 作为 owner 本地更新`,
       cpuCall: "local_optimizer.step()",
-      cpuDetail: ownsParameter ? `Rank ${selectedRank} 的 optimizer 包含 ${parameterName}` : `Rank ${selectedRank} 的 optimizer 不包含 ${parameterName}`,
-      activeStream: ownsParameter ? "compute" : "none",
-      kernel: ownsParameter ? "AdamW CUDA kernel" : "没有该参数的更新 kernel",
-      kernelDetail: ownsParameter ? "SM 读取 grad、m、v 并计算新参数" : "本 rank 会更新自己拥有的其他参数",
-      hbmObject: ownsParameter ? `${parameterName} + grad + m + v` : `${parameterName} + grad`,
-      hbmDetail: ownsParameter ? "新参数直接写回 owner 的显存地址" : "副本暂时保持旧值",
+      cpuDetail: `只有 Rank ${owner} 的本地 optimizer 包含 ${parameterName}`,
+      activeStream: "compute",
+      kernel: "AdamW CUDA kernel",
+      kernelDetail: "Owner GPU 的 SM 读取 grad、m、v 并计算新参数",
+      hbmObject: `${parameterName} + grad + m + v`,
+      hbmDetail: "新参数直接写回 owner 的显存地址，其他副本暂时保持旧值",
       link: "无链路传输",
-      payload: ownsParameter ? `Rank ${selectedRank} 写回 ${parameterName}` : `等待 Rank ${owner} 的新值`,
+      payload: `Rank ${owner} 写回 ${parameterName}`,
       explanation: "Optimizer step 仍是 GPU 计算。只不过每个 rank 的本地 optimizer 只持有一部分参数。",
       pattern: "owner-compute",
       sourceRank: owner,
       ownerHbmObject: `${parameterName} + grad + m + v`,
       replicaHbmObject: `${parameterName} replica + grad`,
+      sourceObject: `${parameterName} + grad + m + v`,
+      destinationObject: `updated ${parameterName} + updated m + v`,
+      memoryByRole: {
+        owner: [
+          { label: "W", detail: parameterName, state: "write" },
+          { label: "grad", detail: "同步后的完整梯度", state: "read" },
+          { label: "m", detail: "一阶动量", state: "write" },
+          { label: "v", detail: "二阶动量", state: "write" },
+        ],
+        idle: [
+          { label: "W replica", detail: `${parameterName} 的旧副本`, state: "stale" },
+          { label: "grad", detail: "同步后的完整梯度", state: "resident" },
+        ],
+      },
     };
   }
 
   if (phase.kind === "broadcast") {
-    const isSource = owner === selectedRank;
     return {
       operation: `Broadcast ${parameterName}`,
       cpuCall: `dist.broadcast(..., src=${owner})`,
       cpuDetail: "所有 rank 以相同顺序进入同一个 collective",
       activeStream: "comm",
       kernel: "NCCL broadcast kernel",
-      kernelDetail: isSource ? "SM 从 owner HBM 读取参数并发送" : "SM 接收参数并写入目标地址",
+      kernelDetail: "Owner GPU 从 HBM 读取参数，其他 GPU 接收并写入目标地址",
       hbmObject: parameterName,
-      hbmDetail: isSource ? "source buffer 提供新参数" : "destination buffer 被原地覆盖",
+      hbmDetail: "Owner 的 source buffer 提供新参数，receiver buffer 被原地覆盖",
       link: "NVLink / PCIe P2P",
       payload: `${parameterName}：Rank ${owner} → 其余 ranks`,
       explanation: "CPU 只负责入队。真正的数据搬运由 comm stream 上的 NCCL kernel 和 GPU 互连完成。",
       pattern: "broadcast",
       sourceRank: owner,
+      sourceObject: `updated ${parameterName}`,
+      destinationObject: `${parameterName} replica 被原地覆盖`,
+      memoryByRole: {
+        source: [
+          { label: "W owner", detail: `updated ${parameterName}`, state: "send" },
+          { label: "m + v", detail: "只留在 owner", state: "resident" },
+        ],
+        receiver: [
+          { label: "W replica", detail: `${parameterName} 的目标地址`, state: "receive" },
+          { label: "grad", detail: "本轮已使用", state: "resident" },
+        ],
+      },
     };
   }
 
@@ -175,6 +280,20 @@ export function shardedOptimizerHardwareSnapshot(
     payload: phase.kind === "ready" ? "完整 parameter + grad" : "一致的 parameter replicas",
     explanation: phase.explanation,
     pattern: "idle",
+    sourceObject: phase.kind === "ready" ? `${parameterName} + synchronized grad` : `synchronized ${parameterName}`,
+    destinationObject: phase.kind === "ready" ? "等待各 owner 执行 AdamW" : "下一轮 forward 可直接读取",
+    memoryByRole: {
+      idle: phase.kind === "ready"
+        ? [
+            { label: "W replica", detail: parameterName, state: "resident" },
+            { label: "grad", detail: "DDP 已同步", state: "resident" },
+            { label: "m + v", detail: "只在对应 owner 上存在", state: "resident" },
+          ]
+        : [
+            { label: "W replica", detail: `${parameterName} 已一致`, state: "resident" },
+            { label: "m + v", detail: "仍按 owner 分片", state: "resident" },
+          ],
+    },
   };
 }
 
@@ -197,6 +316,15 @@ export function fsdpHardwareSnapshot(
       payload: `${layerName} weight shards`,
       explanation: "只有当前层被展开。其他层仍然只保留各自 shard。",
       pattern: "all-gather",
+      sourceObject: `${layerName} local W shard (${computeDtype})`,
+      destinationObject: `${layerName} temporary full W (${computeDtype})`,
+      memoryByRole: {
+        exchange: [
+          { label: "W shard", detail: "本 rank 的长期分片", state: "send" },
+          { label: "full W", detail: "临时完整权重 buffer", state: "receive" },
+          { label: "m + v", detail: "本地 optimizer shard", state: "resident" },
+        ],
+      },
     };
   }
 
@@ -215,6 +343,21 @@ export function fsdpHardwareSnapshot(
       payload: backward ? "activation、dY、W → dW" : "activation、W → output",
       explanation: "All-Gather 完成后才允许 compute stream 使用完整权重，CUDA event 负责建立依赖。",
       pattern: "local-all",
+      sourceObject: backward ? `${layerName} full W + activation + dY` : `${layerName} full W + activation`,
+      destinationObject: backward ? `${layerName} full local dW + dX` : `${layerName} output activation`,
+      memoryByRole: {
+        compute: backward
+          ? [
+              { label: "full W", detail: "Backward 临时完整权重", state: "read" },
+              { label: "activation + dY", detail: "Backward 输入", state: "read" },
+              { label: "full local dW", detail: "尚未跨 rank 归约", state: "write" },
+            ]
+          : [
+              { label: "full W", detail: "Forward 临时完整权重", state: "read" },
+              { label: "activation", detail: "当前层输入", state: "read" },
+              { label: "output", detail: "当前层输出", state: "write" },
+            ],
+      },
     };
   }
 
@@ -232,6 +375,15 @@ export function fsdpHardwareSnapshot(
       payload: `${layerName} full local dW → averaged dW shards`,
       explanation: "归约和切分合成一个 collective，避免先得到每卡完整 global dW。",
       pattern: "reduce-scatter",
+      sourceObject: `${layerName} full local dW`,
+      destinationObject: `${layerName} averaged dW shard (fp32)`,
+      memoryByRole: {
+        reduce: [
+          { label: "full local dW", detail: "本 rank 产生的完整层梯度", state: "send" },
+          { label: "dW shard", detail: "归约后的本地分片", state: "receive" },
+          { label: "W shard", detail: "FP32 master 参数分片", state: "resident" },
+        ],
+      },
     };
   }
 
@@ -249,6 +401,16 @@ export function fsdpHardwareSnapshot(
       payload: "local W shard + dW shard → updated W shard",
       explanation: "下一次计算需要该层时，再用 All-Gather 临时重建完整权重。",
       pattern: "local-all",
+      sourceObject: `${layerName} W shard + dW shard + m + v`,
+      destinationObject: `${layerName} updated W shard + updated m + v`,
+      memoryByRole: {
+        compute: [
+          { label: "W shard", detail: "FP32 master 参数分片", state: "write" },
+          { label: "dW shard", detail: "归约后的平均梯度", state: "read" },
+          { label: "m", detail: "本地一阶动量分片", state: "write" },
+          { label: "v", detail: "本地二阶动量分片", state: "write" },
+        ],
+      },
     };
   }
 
@@ -266,6 +428,15 @@ export function fsdpHardwareSnapshot(
       payload: "full W buffer released",
       explanation: "FSDP 的峰值显存不仅由分片比例决定，也由完整 buffer 在 HBM 中存活多久决定。",
       pattern: "release",
+      sourceObject: `${layerName} temporary full W buffer`,
+      destinationObject: `只保留 ${layerName} FP32 master shard`,
+      memoryByRole: {
+        release: [
+          { label: "W shard", detail: "长期参数分片继续驻留", state: "resident" },
+          { label: "full W", detail: "临时完整权重 buffer", state: "release" },
+          { label: "m + v", detail: "本地 optimizer shard", state: "resident" },
+        ],
+      },
     };
   }
 
@@ -282,6 +453,15 @@ export function fsdpHardwareSnapshot(
     payload: "local weight shard",
     explanation: "完整参数此刻不存在于任何单张 GPU。",
     pattern: "idle",
+    sourceObject: `${layerName} FP32 master shard`,
+    destinationObject: "等待该层进入执行窗口",
+    memoryByRole: {
+      idle: [
+        { label: "W shard", detail: "FP32 master 参数分片", state: "resident" },
+        { label: "m + v", detail: "本地 optimizer state 分片", state: "resident" },
+        { label: "full W", detail: "当前没有分配临时完整 buffer", state: "absent" },
+      ],
+    },
   };
 }
 
