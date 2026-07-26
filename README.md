@@ -51,6 +51,7 @@ FSDP
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
+- An interactive GPU memory-hierarchy lab that follows a dW tile through HBM, L2, Shared Memory, registers, FMA, and writeback
 - Hash routes that work directly on GitHub Pages
 - Route-level code splitting so each interactive topic loads only when opened
 - Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
@@ -130,6 +131,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/training/adamw      AdamW moments, decay, parameter groups, HBM, and state sharding
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
+#/gpu/memory-hierarchy  dW tiling, on-chip reuse, cache semantics, and global-memory traffic
 #/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground
 #/distributed/process-rank  OS processes, rank identity, rendezvous, and Process Groups
 #/distributed/collective    Broadcast, Reduce, Gather, Scatter, AllReduce, and AllToAll contracts

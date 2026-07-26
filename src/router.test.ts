@@ -23,6 +23,7 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/gpu/architecture"), { kind: "topic", topicId: "gpu-architecture" });
     assert.deepEqual(parseHash("#/gpu/cuda-kernel"), { kind: "topic", topicId: "cuda-kernel" });
     assert.deepEqual(parseHash("#/gpu/cuda-stream"), { kind: "topic", topicId: "cuda-stream" });
+    assert.deepEqual(parseHash("#/gpu/memory-hierarchy"), { kind: "topic", topicId: "memory-hierarchy" });
   });
 
   it("routes the Autograd, Gradient, and AdamW playgrounds", () => {

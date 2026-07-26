@@ -41,8 +41,8 @@ export function CUDAKernelTopicPage() {
       <CUDAKernelJourneyPlayground />
 
       <section className="project-note kernel-project-note">
-        <div><p className="eyebrow">Next connection</p><h2>Kernel 入队之后，执行顺序由 Stream 和 Event 管理。</h2><p>下一步把单次 launch 放进多条队列，观察 backward kernel 与 NCCL kernel 怎样安全重叠。</p></div>
-        <a href="#/gpu/cuda-stream">进入 CUDA Stream<ArrowRight size={17} aria-hidden="true" /></a>
+        <div><p className="eyebrow">Next connection</p><h2>Kernel 开始执行后，性能取决于数据从哪里来。</h2><p>下一步进入 GPU 内存层级，观察 global load 怎样经过 Cache，以及 Shared Memory 为什么能减少重复搬运。</p></div>
+        <a href="#/gpu/memory-hierarchy">进入内存层级<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );

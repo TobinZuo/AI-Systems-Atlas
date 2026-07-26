@@ -1,6 +1,6 @@
 export type AtlasRoute =
   | { kind: "home"; section: "atlas" | "paths" }
-  | { kind: "topic"; topicId: "autograd" | "gradient" | "adamw" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "process-rank" | "collective" | "ring-allreduce" | "ddp" | "zero-1" | "fsdp" | "compare" }
+  | { kind: "topic"; topicId: "autograd" | "gradient" | "adamw" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "memory-hierarchy" | "process-rank" | "collective" | "ring-allreduce" | "ddp" | "zero-1" | "fsdp" | "compare" }
   | { kind: "not-found"; path: string };
 
 export function parseHash(hash: string): AtlasRoute {
@@ -14,6 +14,7 @@ export function parseHash(hash: string): AtlasRoute {
   if (path === "/gpu/architecture") return { kind: "topic", topicId: "gpu-architecture" };
   if (path === "/gpu/cuda-kernel") return { kind: "topic", topicId: "cuda-kernel" };
   if (path === "/gpu/cuda-stream") return { kind: "topic", topicId: "cuda-stream" };
+  if (path === "/gpu/memory-hierarchy") return { kind: "topic", topicId: "memory-hierarchy" };
   if (path === "/distributed/process-rank") return { kind: "topic", topicId: "process-rank" };
   if (path === "/distributed/collective") return { kind: "topic", topicId: "collective" };
   if (path === "/distributed/ring-allreduce") return { kind: "topic", topicId: "ring-allreduce" };

@@ -32,6 +32,6 @@ describe("Knowledge topic catalog", () => {
     for (const topic of topicIndex.values()) {
       if (topic.status === "available") assert.ok(topic.route);
     }
-    assert.equal(availableTopicCount, 12);
+    assert.equal(availableTopicCount, 13);
   });
 });

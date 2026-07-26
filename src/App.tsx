@@ -13,6 +13,7 @@ const DistributedComparisonTopicPage = lazy(() => import("./components/Distribut
 const FSDPTopicPage = lazy(() => import("./components/FSDPTopicPage").then((module) => ({ default: module.FSDPTopicPage })));
 const GradientTopicPage = lazy(() => import("./components/GradientTopicPage").then((module) => ({ default: module.GradientTopicPage })));
 const GPUArchitectureTopicPage = lazy(() => import("./components/GPUArchitectureTopicPage").then((module) => ({ default: module.GPUArchitectureTopicPage })));
+const MemoryHierarchyTopicPage = lazy(() => import("./components/MemoryHierarchyTopicPage").then((module) => ({ default: module.MemoryHierarchyTopicPage })));
 const ProcessRankTopicPage = lazy(() => import("./components/ProcessRankTopicPage").then((module) => ({ default: module.ProcessRankTopicPage })));
 const RingAllReduceTopicPage = lazy(() => import("./components/RingAllReduceTopicPage").then((module) => ({ default: module.RingAllReduceTopicPage })));
 const ShardedOptimizerTopicPage = lazy(() => import("./components/ShardedOptimizerTopicPage").then((module) => ({ default: module.ShardedOptimizerTopicPage })));
@@ -90,6 +91,7 @@ function App() {
           {route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
           {route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
           {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
+          {route.topicId === "memory-hierarchy" && <MemoryHierarchyTopicPage />}
           {route.topicId === "process-rank" && <ProcessRankTopicPage />}
           {route.topicId === "collective" && <CollectiveTopicPage />}
           {route.topicId === "ring-allreduce" && <RingAllReduceTopicPage />}
