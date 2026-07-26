@@ -1,6 +1,6 @@
 export type AtlasRoute =
   | { kind: "home"; section: "atlas" | "paths" }
-  | { kind: "topic"; topicId: "gpu-architecture" | "ddp" | "zero-1" | "fsdp" | "compare" }
+  | { kind: "topic"; topicId: "gpu-architecture" | "cuda-stream" | "ddp" | "zero-1" | "fsdp" | "compare" }
   | { kind: "not-found"; path: string };
 
 export function parseHash(hash: string): AtlasRoute {
@@ -9,6 +9,7 @@ export function parseHash(hash: string): AtlasRoute {
   if (path === "/" || path === "/atlas") return { kind: "home", section: "atlas" };
   if (path === "/paths") return { kind: "home", section: "paths" };
   if (path === "/gpu/architecture") return { kind: "topic", topicId: "gpu-architecture" };
+  if (path === "/gpu/cuda-stream") return { kind: "topic", topicId: "cuda-stream" };
   if (path === "/distributed/ddp") return { kind: "topic", topicId: "ddp" };
   if (path === "/distributed/zero-1") return { kind: "topic", topicId: "zero-1" };
   if (path === "/distributed/fsdp") return { kind: "topic", topicId: "fsdp" };

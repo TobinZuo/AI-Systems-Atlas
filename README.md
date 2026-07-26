@@ -40,6 +40,7 @@ FSDP
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
+- An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
 - Hash routes that work directly on GitHub Pages
 - Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
 - A shared DDP, ZeRO-1, and FSDP comparison lab with the same model-size and world-size inputs
@@ -114,6 +115,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/                    Knowledge map
 #/paths               Cross-topic learning journeys
 #/gpu/architecture    GPU execution-model and gradient kernel playground
+#/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground
 #/distributed/ddp     DDP concept playground and trace workspace
 #/distributed/zero-1  Sharded Optimizer ownership and broadcast playground
 #/distributed/fsdp    FSDP parameter lifecycle and memory playground

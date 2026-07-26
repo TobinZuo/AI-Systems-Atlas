@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CUDAStreamsTopicPage } from "./components/CUDAStreamsTopicPage";
 import { DDPTopicPage } from "./components/DDPTopicPage";
 import { DistributedComparisonTopicPage } from "./components/DistributedComparisonTopicPage";
 import { FSDPTopicPage } from "./components/FSDPTopicPage";
@@ -60,6 +61,7 @@ function App() {
 
       {route.kind === "home" && <HomePage />}
       {route.kind === "topic" && route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
+      {route.kind === "topic" && route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
       {route.kind === "topic" && route.topicId === "ddp" && <DDPTopicPage />}
       {route.kind === "topic" && route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
       {route.kind === "topic" && route.topicId === "fsdp" && <FSDPTopicPage />}

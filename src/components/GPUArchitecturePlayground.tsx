@@ -381,8 +381,8 @@ export function GPUArchitecturePlayground() {
       </section>
 
       <section className="gpu-next-connection" aria-labelledby="gpu-next-title">
-        <div><span>接回分布式训练</span><h3 id="gpu-next-title">这个 kernel 写完梯度，DDP 才能开始同步</h3><p>Backward kernel 把 parameter.grad 写入 HBM。DDP hook 发现 bucket ready 后，再把 NCCL collective 提交到 Comm Stream。</p></div>
-        <a href="#/distributed/ddp">进入 DDP 数据流</a>
+        <div><span>进入异步执行</span><h3 id="gpu-next-title">这个 kernel 写完梯度，通信才可以安全读取</h3><p>Backward kernel 把 parameter.grad 写入 HBM。下一步观察 DDP hook 怎样把 NCCL collective 提交到 Comm Stream，并用 Event 保证数据就绪。</p></div>
+        <a href="#/gpu/cuda-stream">进入 CUDA Stream</a>
       </section>
 
       <footer className="gpu-reference-footer">

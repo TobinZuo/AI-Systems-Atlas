@@ -104,7 +104,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     topics: [
       { id: "gpu-architecture", title: "GPU、SM 与 Warp", description: "用一个梯度 kernel 串起 Grid、Block、SM、Warp、Lane、寄存器与 HBM。", status: "available", route: "/gpu/architecture", prerequisites: ["gradient"] },
       { id: "cuda-kernel", title: "CUDA Kernel", description: "算子如何变成 GPU 上的任务。", status: "next", prerequisites: ["gpu-architecture"] },
-      { id: "cuda-stream", title: "CUDA Stream", description: "计算与通信怎样排队和重叠。", status: "next", prerequisites: ["cuda-kernel"] },
+      { id: "cuda-stream", title: "CUDA Stream", description: "计算与通信怎样排队、建立依赖并安全重叠。", status: "available", route: "/gpu/cuda-stream", prerequisites: ["cuda-kernel"] },
       { id: "memory-hierarchy", title: "HBM、SRAM 与 Cache", description: "数据在哪一层以及搬运代价。", status: "next", prerequisites: ["gpu-architecture"] },
       { id: "mixed-precision", title: "Mixed Precision", description: "精度、吞吐与稳定性的权衡。", status: "mapped", prerequisites: ["cuda-kernel"] },
       { id: "flash-attention", title: "FlashAttention", description: "用分块减少 HBM 读写。", status: "next", prerequisites: ["attention", "memory-hierarchy"] },

@@ -75,6 +75,7 @@ export function DistributedHardwarePath({
         <div className="hardware-path-footer-note">
           <span>跨服务器时，最后一段通常会换成 NIC + InfiniBand/RoCE + GPUDirect RDMA。</span>
           <a href="#/gpu/architecture">下钻 GPU、SM 与 Warp <ArrowRight size={13} aria-hidden="true" /></a>
+          <a href="#/gpu/cuda-stream">下钻 Compute / Comm Stream <ArrowRight size={13} aria-hidden="true" /></a>
         </div>
       </footer>
     </section>

@@ -42,7 +42,7 @@ export function GPUArchitectureTopicPage() {
 
       <section className="project-note gpu-project-note">
         <div><p className="eyebrow">Executable explanation</p><h2>不是背术语，是定位一个具体元素。</h2><p>改动 n、blockDim 和 SM 数量，观察同一个索引公式怎样改变 Grid、尾部 Warp、显存事务和调度波次。</p></div>
-        <a href="#/distributed/ddp">继续跟踪梯度<ArrowRight size={17} aria-hidden="true" /></a>
+        <a href="#/gpu/cuda-stream">继续跟踪梯度<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );
