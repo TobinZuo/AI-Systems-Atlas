@@ -4,6 +4,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { parseHash, type AtlasRoute } from "./router";
 
 const AutogradTopicPage = lazy(() => import("./components/AutogradTopicPage").then((module) => ({ default: module.AutogradTopicPage })));
+const AdamWTopicPage = lazy(() => import("./components/AdamWTopicPage").then((module) => ({ default: module.AdamWTopicPage })));
 const CUDAKernelTopicPage = lazy(() => import("./components/CUDAKernelTopicPage").then((module) => ({ default: module.CUDAKernelTopicPage })));
 const CUDAStreamsTopicPage = lazy(() => import("./components/CUDAStreamsTopicPage").then((module) => ({ default: module.CUDAStreamsTopicPage })));
 const DDPTopicPage = lazy(() => import("./components/DDPTopicPage").then((module) => ({ default: module.DDPTopicPage })));
@@ -82,6 +83,7 @@ function App() {
         <Suspense fallback={<TopicPageSkeleton />}>
           {route.topicId === "autograd" && <AutogradTopicPage />}
           {route.topicId === "gradient" && <GradientTopicPage />}
+          {route.topicId === "adamw" && <AdamWTopicPage />}
           {route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
           {route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
           {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}

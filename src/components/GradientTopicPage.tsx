@@ -41,8 +41,8 @@ export function GradientTopicPage() {
       <GradientPlayground />
 
       <section className="project-note gradient-project-note">
-        <div><p className="eyebrow">Next connection</p><h2>`.grad` 已经成为内存中的 Tensor，下一步看硬件怎样处理它。</h2><p>沿显存地址进入 CUDA Grid、Block、Warp、SM、寄存器与 HBM。</p></div>
-        <a href="#/gpu/architecture">进入 GPU 执行模型<ArrowRight size={17} aria-hidden="true" /></a>
+        <div><p className="eyebrow">Next connection</p><h2>`.grad` 已经成为内存中的 Tensor，下一步看 optimizer 怎样消费它。</h2><p>连续跟踪 AdamW 的一阶动量、二阶动量、偏差修正和权重衰减。</p></div>
+        <a href="#/training/adamw">进入 AdamW<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );

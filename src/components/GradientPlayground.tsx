@@ -256,6 +256,7 @@ export function GradientPlayground() {
 
       <nav className="gradient-bridge-nav" aria-label="Gradient 相邻专题">
         <a href="#/training/autograd"><FunctionIcon size={17} weight="duotone" /><span><small>上游</small><strong>Autograd 如何算出梯度</strong></span></a>
+        <a href="#/training/adamw"><MathOperations size={17} weight="duotone" /><span><small>下游</small><strong>AdamW 怎样消费梯度</strong></span></a>
         <a href="#/gpu/architecture"><Cpu size={17} weight="duotone" /><span><small>下钻</small><strong>GPU 怎样执行梯度 kernel</strong></span></a>
         <a href="#/distributed/ddp"><Network size={17} weight="duotone" /><span><small>扩展</small><strong>多 GPU 怎样同步梯度</strong></span></a>
       </nav>

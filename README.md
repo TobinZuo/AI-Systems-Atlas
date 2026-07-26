@@ -15,12 +15,13 @@ The root page currently maps 45 topics across seven domains:
 - Inference systems
 - Generative and multimodal systems
 
-The first active journey follows one gradient from Autograd through GPU execution,
+The first active journey follows one gradient from Autograd through AdamW and GPU execution,
 then compares how DDP, ZeRO-1, and FSDP manage distributed model state:
 
 ```text
 loss.backward()
   -> Autograd scheduling
+  -> AdamW first and second moments
   -> CUDA gradient kernel
   -> gradient bucket ready
   -> Ring Reduce-Scatter
@@ -42,6 +43,7 @@ FSDP
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
 - An interactive Autograd lab for dynamic graph recording, saved tensors, reverse scheduling, leaf-gradient accumulation, and version-counter errors
 - An interactive Gradient lab for per-sample derivatives, batch reduction, `.grad` storage, finite-difference checks, optimizer direction, and DDP averaging
+- An interactive AdamW lab for moment history, bias correction, decoupled weight decay, parameter groups, CUDA execution, and distributed memory ownership
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
@@ -121,6 +123,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/paths               Cross-topic learning journeys
 #/training/autograd   Dynamic graph, backward scheduling, and leaf gradients
 #/training/gradient   Sample contributions, batch reduction, grad buffers, and DDP averaging
+#/training/adamw      AdamW moments, decay, parameter groups, HBM, and state sharding
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
 #/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground

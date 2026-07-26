@@ -1,6 +1,6 @@
 export type AtlasRoute =
   | { kind: "home"; section: "atlas" | "paths" }
-  | { kind: "topic"; topicId: "autograd" | "gradient" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "ddp" | "zero-1" | "fsdp" | "compare" }
+  | { kind: "topic"; topicId: "autograd" | "gradient" | "adamw" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "ddp" | "zero-1" | "fsdp" | "compare" }
   | { kind: "not-found"; path: string };
 
 export function parseHash(hash: string): AtlasRoute {
@@ -10,6 +10,7 @@ export function parseHash(hash: string): AtlasRoute {
   if (path === "/paths") return { kind: "home", section: "paths" };
   if (path === "/training/autograd") return { kind: "topic", topicId: "autograd" };
   if (path === "/training/gradient") return { kind: "topic", topicId: "gradient" };
+  if (path === "/training/adamw") return { kind: "topic", topicId: "adamw" };
   if (path === "/gpu/architecture") return { kind: "topic", topicId: "gpu-architecture" };
   if (path === "/gpu/cuda-kernel") return { kind: "topic", topicId: "cuda-kernel" };
   if (path === "/gpu/cuda-stream") return { kind: "topic", topicId: "cuda-stream" };
