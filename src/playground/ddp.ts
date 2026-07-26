@@ -23,6 +23,13 @@ export interface GradientPreset {
   values: number[][];
 }
 
+export interface ChunkJourneyHop {
+  phase: "reduce-scatter" | "all-gather";
+  round: number;
+  from: number;
+  to: number;
+}
+
 export const playgroundSteps: PlaygroundStep[] = [
   {
     id: "local",
@@ -142,6 +149,45 @@ export function ranksForStep(
   return gathered;
 }
 
+export function ranksBeforeStep(
+  simulation: RingSimulation,
+  step: PlaygroundStep,
+): RankState[] {
+  if (step.stage === "local") return cloneRanks(simulation.initial);
+  if (step.stage === "reduce-scatter") {
+    const round = step.round ?? 0;
+    return round === 0
+      ? cloneRanks(simulation.initial)
+      : cloneRanks(simulation.reduceScatter[round - 1].ranks);
+  }
+  if (step.stage === "all-gather") {
+    const round = step.round ?? 0;
+    if (round > 0) return cloneRanks(simulation.allGather[round - 1].ranks);
+
+    const reducedRanks = simulation.reduceScatter[simulation.reduceScatter.length - 1]?.ranks;
+    if (!reducedRanks) throw new Error("Reduce-Scatter state is unavailable");
+    return reducedRanks.map((rankState) => {
+      const ownedChunk = (rankState.rank + 1) % simulation.worldSize;
+      return {
+        rank: rankState.rank,
+        chunks: rankState.chunks.map((chunk) =>
+          chunk.chunk === ownedChunk
+            ? { ...chunk, values: [...chunk.values], contributors: [...chunk.contributors] }
+            : { chunk: chunk.chunk, values: [], contributors: [], complete: false },
+        ),
+      };
+    });
+  }
+
+  if (step.stage === "average") {
+    return cloneRanks(
+      simulation.allGather[simulation.allGather.length - 1]?.ranks
+        ?? simulation.initial,
+    );
+  }
+  return ranksForStep(simulation, step);
+}
+
 export function roundForStep(
   simulation: RingSimulation,
   step: PlaygroundStep,
@@ -153,6 +199,35 @@ export function roundForStep(
     return simulation.allGather[step.round ?? 0];
   }
   return null;
+}
+
+/**
+ * Return the six physical Ring hops taken by one logical chunk.
+ *
+ * Keeping this derived from the simulator, instead of duplicating the Ring
+ * formula in the UI, guarantees that the route diagram and numeric matrix
+ * always describe the same transfers.
+ */
+export function chunkJourney(
+  simulation: RingSimulation,
+  chunk: number,
+): ChunkJourneyHop[] {
+  if (!Number.isInteger(chunk) || chunk < 0 || chunk >= simulation.worldSize) {
+    throw new Error(`Chunk ${chunk} is outside the simulated world`);
+  }
+
+  return [...simulation.reduceScatter, ...simulation.allGather].map((round) => {
+    const transfer = round.transfers.find((item) => item.chunk === chunk);
+    if (!transfer) {
+      throw new Error(`Chunk ${chunk} is missing from ${round.phase} round ${round.round}`);
+    }
+    return {
+      phase: round.phase,
+      round: round.round,
+      from: transfer.from,
+      to: transfer.to,
+    };
+  });
 }
 
 export function stepIndexForConceptEvent(eventId: string): number {

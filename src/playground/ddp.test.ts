@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { simulateRingAllReduce } from "../sim/ring";
 import {
+  chunkJourney,
   gradientPresets,
   playgroundSteps,
+  ranksBeforeStep,
   ranksForStep,
   roundForStep,
   stepIndexForConceptEvent,
@@ -37,4 +39,35 @@ test("trace concept ids land on the matching playground phase", () => {
   assert.equal(stepIndexForConceptEvent("reduce-scatter-2"), 3);
   assert.equal(stepIndexForConceptEvent("all-gather-1"), 5);
   assert.equal(stepIndexForConceptEvent("optimizer-update"), 8);
+});
+
+test("a followed chunk keeps one continuous route through both collectives", () => {
+  const simulation = simulateRingAllReduce(gradientPresets[0].values);
+  const journey = chunkJourney(simulation, 2);
+
+  assert.deepEqual(
+    journey.map(({ phase, from, to }) => [phase, from, to]),
+    [
+      ["reduce-scatter", 2, 3],
+      ["reduce-scatter", 3, 0],
+      ["reduce-scatter", 0, 1],
+      ["all-gather", 1, 2],
+      ["all-gather", 2, 3],
+      ["all-gather", 3, 0],
+    ],
+  );
+});
+
+test("the hardware stage can show memory before the first All-Gather copy lands", () => {
+  const simulation = simulateRingAllReduce(gradientPresets[0].values);
+  const firstGather = playgroundSteps.find((step) => step.id === "ag-0");
+  assert.ok(firstGather);
+
+  const before = ranksBeforeStep(simulation, firstGather);
+  for (const rank of before) {
+    const populated = rank.chunks.filter((chunk) => chunk.values.length > 0);
+    assert.equal(populated.length, 1);
+    assert.equal(populated[0].chunk, (rank.rank + 1) % simulation.worldSize);
+    assert.equal(populated[0].complete, true);
+  }
 });

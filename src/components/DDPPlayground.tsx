@@ -10,10 +10,12 @@ import { Network } from "@phosphor-icons/react/Network";
 import { SlidersHorizontal } from "@phosphor-icons/react/SlidersHorizontal";
 import { Stack } from "@phosphor-icons/react/Stack";
 import { useEffect, useMemo, useState } from "react";
+import { DDPSystemStage } from "./DDPSystemStage";
 import {
   copyPreset,
   gradientPresets,
   playgroundSteps,
+  ranksBeforeStep,
   ranksForStep,
   roundForStep,
   stepIndexForConceptEvent,
@@ -170,6 +172,8 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
   const [presetId, setPresetId] = useState<string | null>(gradientPresets[0].id);
   const [stepIndex, setStepIndex] = useState(0);
   const [selectedRank, setSelectedRank] = useState(0);
+  const [selectedChunk, setSelectedChunk] = useState<number | null>(2);
+  const [replayKey, setReplayKey] = useState(0);
   const [resultMode, setResultMode] = useState<"sum" | "average">("average");
 
   useEffect(() => {
@@ -179,6 +183,7 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
   const simulation = useMemo(() => simulateRingAllReduce(inputs), [inputs]);
   const step = playgroundSteps[stepIndex];
   const rankStates = ranksForStep(simulation, step);
+  const rankStatesBefore = ranksBeforeStep(simulation, step);
   const round = roundForStep(simulation, step);
   const outgoing = round?.transfers.find((transfer) => transfer.from === selectedRank);
   const incoming = round?.transfers.find((transfer) => transfer.to === selectedRank);
@@ -206,6 +211,10 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
     setInputs(copyPreset(preset.values));
     setPresetId(id);
     setStepIndex(0);
+  };
+
+  const selectStep = (index: number) => {
+    setStepIndex(Math.max(0, Math.min(playgroundSteps.length - 1, index)));
   };
 
   const activeFlowIndex =
@@ -315,7 +324,7 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
               type="button"
               className="phase-nav-button"
               disabled={stepIndex === 0}
-              onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
+              onClick={() => selectStep(stepIndex - 1)}
               aria-label="上一个状态"
             >
               <CaretLeft size={16} />
@@ -326,7 +335,7 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
                   type="button"
                   className={`${item.stage}${index === stepIndex ? " is-active" : ""}${index < stepIndex ? " is-past" : ""}`}
                   aria-current={index === stepIndex ? "step" : undefined}
-                  onClick={() => setStepIndex(index)}
+                  onClick={() => selectStep(index)}
                   key={item.id}
                 >
                   <span>{item.compactLabel}</span>
@@ -338,7 +347,7 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
               type="button"
               className="phase-nav-button"
               disabled={stepIndex === playgroundSteps.length - 1}
-              onClick={() => setStepIndex((index) => Math.min(playgroundSteps.length - 1, index + 1))}
+              onClick={() => selectStep(stepIndex + 1)}
               aria-label="下一个状态"
             >
               <CaretRight size={16} />
@@ -351,7 +360,7 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
                 <button
                   type="button"
                   className={`flow-node flow-${node.kind}${index === activeFlowIndex ? " is-active" : ""}${index < activeFlowIndex ? " is-done" : ""}`}
-                  onClick={() => setStepIndex(node.jumpTo)}
+                  onClick={() => selectStep(node.jumpTo)}
                 >
                   <strong>{node.label}</strong>
                   <span>{node.detail}</span>
@@ -360,6 +369,21 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
               </div>
             ))}
           </section>
+
+          <DDPSystemStage
+            simulation={simulation}
+            step={step}
+            rankStates={rankStates}
+            rankStatesBefore={rankStatesBefore}
+            round={round}
+            selectedRank={selectedRank}
+            selectedChunk={selectedChunk}
+            replayKey={replayKey}
+            onSelectRank={setSelectedRank}
+            onSelectChunk={setSelectedChunk}
+            onSelectStep={selectStep}
+            onReplay={() => setReplayKey((key) => key + 1)}
+          />
 
           <section className="ring-visualizer" aria-label="每个 rank 的 chunk 状态">
             <header>
@@ -374,7 +398,11 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
               <div className="matrix-header" role="row">
                 <span role="columnheader">设备</span>
                 {Array.from({ length: 4 }, (_, chunk) => (
-                  <strong className={`chunk-tone-${chunk}`} role="columnheader" key={chunk}>C{chunk}<small>g{chunk * 2}, g{chunk * 2 + 1}</small></strong>
+                  <strong className={`chunk-tone-${chunk}${selectedChunk === chunk ? " is-followed" : ""}`} role="columnheader" key={chunk}>
+                    <button type="button" aria-pressed={selectedChunk === chunk} onClick={() => setSelectedChunk(chunk)}>
+                      C{chunk}<small>g{chunk * 2}, g{chunk * 2 + 1}</small>
+                    </button>
+                  </strong>
                 ))}
               </div>
               {rankStates.map((rankState) => {
@@ -390,15 +418,22 @@ export function DDPPlayground({ focusEventId }: { focusEventId?: string | null }
                       const isOutgoing = rankOutgoing?.chunk === chunk.chunk;
                       const isIncoming = rankIncoming?.chunk === chunk.chunk;
                       return (
-                        <div
-                          className={`matrix-chunk chunk-tone-${chunk.chunk}${chunk.complete ? " is-complete" : ""}${!chunk.values.length ? " is-empty" : ""}${isOutgoing ? " is-sending" : ""}${isIncoming ? " is-receiving" : ""}`}
+                        <button
+                          type="button"
+                          className={`matrix-chunk chunk-tone-${chunk.chunk}${chunk.complete ? " is-complete" : ""}${!chunk.values.length ? " is-empty" : ""}${isOutgoing ? " is-sending" : ""}${isIncoming ? " is-receiving" : ""}${selectedChunk === chunk.chunk ? " is-followed" : ""}${selectedChunk !== null && selectedChunk !== chunk.chunk ? " is-dimmed" : ""}`}
                           role="cell"
+                          aria-pressed={selectedChunk === chunk.chunk}
+                          aria-label={`在 Rank ${rankState.rank} 追踪 chunk ${chunk.chunk}`}
+                          onClick={() => {
+                            setSelectedRank(rankState.rank);
+                            setSelectedChunk(chunk.chunk);
+                          }}
                           key={chunk.chunk}
                         >
                           <code>{chunk.values.length ? formatVector(chunk.values) : "等待传入"}</code>
                           <span>{chunk.contributors.length ? chunk.contributors.map((rank) => `R${rank}`).join(" + ") : "还没有副本"}</span>
                           {(isOutgoing || isIncoming) && <small>{isOutgoing ? "SEND" : "RECV"}</small>}
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
