@@ -121,7 +121,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     topics: [
       { id: "process-rank", title: "Process 与 Rank", description: "从 torchrun、环境变量与 TCPStore 建立任务身份和通信组。", status: "available", route: "/distributed/process-rank" },
       { id: "collective", title: "集合通信", description: "用同一组数据比较 Broadcast、Reduce、Gather 与 AllToAll 契约。", status: "available", route: "/distributed/collective", prerequisites: ["process-rank"] },
-      { id: "ring-allreduce", title: "Ring AllReduce", description: "Reduce-Scatter 与 All-Gather 如何拼成归约。", status: "next", prerequisites: ["collective"] },
+      { id: "ring-allreduce", title: "Ring AllReduce", description: "模运算怎样安排逐轮 chunk 调度，以及通信量为什么接近 2M。", status: "available", route: "/distributed/ring-allreduce", prerequisites: ["collective"] },
       { id: "ddp", title: "DDP", description: "复制模型、同步梯度、并行计算。", status: "available", route: "/distributed/ddp", prerequisites: ["gradient", "cuda-stream", "ring-allreduce"] },
       { id: "zero-1", title: "ZeRO-1", description: "只分片 optimizer state。", status: "available", route: "/distributed/zero-1", prerequisites: ["ddp", "adamw"] },
       { id: "fsdp", title: "FSDP", description: "参数按需 All-Gather，梯度 Reduce-Scatter。", status: "available", route: "/distributed/fsdp", prerequisites: ["zero-1", "collective"] },

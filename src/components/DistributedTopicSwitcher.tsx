@@ -1,6 +1,7 @@
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { useEffect, useRef } from "react";
 
-export type DistributedTopicId = "process-rank" | "collective" | "ddp" | "zero-1" | "fsdp" | "compare";
+export type DistributedTopicId = "process-rank" | "collective" | "ring-allreduce" | "ddp" | "zero-1" | "fsdp" | "compare";
 
 const topics: Array<{
   id: DistributedTopicId;
@@ -10,6 +11,7 @@ const topics: Array<{
 }> = [
   { id: "process-rank", label: "Process / Rank", summary: "建立任务身份与通信组", route: "/distributed/process-rank" },
   { id: "collective", label: "Collective", summary: "定义跨 Rank 数据契约", route: "/distributed/collective" },
+  { id: "ring-allreduce", label: "Ring AllReduce", summary: "拆开逐轮 chunk 调度", route: "/distributed/ring-allreduce" },
   { id: "ddp", label: "DDP", summary: "复制模型，同步梯度", route: "/distributed/ddp" },
   { id: "zero-1", label: "ZeRO-1", summary: "分片 optimizer state", route: "/distributed/zero-1" },
   { id: "fsdp", label: "FSDP", summary: "分片参数、梯度与状态", route: "/distributed/fsdp" },
@@ -17,13 +19,29 @@ const topics: Array<{
 ];
 
 export function DistributedTopicSwitcher({ current }: { current: DistributedTopicId }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const scroller = scrollerRef.current;
+      const currentTopic = currentRef.current;
+      if (!scroller || !currentTopic) return;
+      const scrollerRect = scroller.getBoundingClientRect();
+      const currentRect = currentTopic.getBoundingClientRect();
+      scroller.scrollLeft += currentRect.left - scrollerRect.left - (scroller.clientWidth - currentRect.width) / 2;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [current]);
+
   return (
     <nav className="distributed-topic-switcher" aria-label="分布式训练专题">
       <span className="switcher-label">分布式训练主线</span>
-      <div>
+      <div ref={scrollerRef}>
         {topics.map((topic, index) => (
           <span className="switcher-topic-wrap" key={topic.id}>
             <a
+              ref={topic.id === current ? currentRef : undefined}
               href={`#${topic.route}`}
               className={topic.id === current ? "is-current" : ""}
               aria-current={topic.id === current ? "page" : undefined}

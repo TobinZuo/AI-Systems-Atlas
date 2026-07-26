@@ -14,6 +14,7 @@ const FSDPTopicPage = lazy(() => import("./components/FSDPTopicPage").then((modu
 const GradientTopicPage = lazy(() => import("./components/GradientTopicPage").then((module) => ({ default: module.GradientTopicPage })));
 const GPUArchitectureTopicPage = lazy(() => import("./components/GPUArchitectureTopicPage").then((module) => ({ default: module.GPUArchitectureTopicPage })));
 const ProcessRankTopicPage = lazy(() => import("./components/ProcessRankTopicPage").then((module) => ({ default: module.ProcessRankTopicPage })));
+const RingAllReduceTopicPage = lazy(() => import("./components/RingAllReduceTopicPage").then((module) => ({ default: module.RingAllReduceTopicPage })));
 const ShardedOptimizerTopicPage = lazy(() => import("./components/ShardedOptimizerTopicPage").then((module) => ({ default: module.ShardedOptimizerTopicPage })));
 
 type Theme = "light" | "dark";
@@ -91,6 +92,7 @@ function App() {
           {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
           {route.topicId === "process-rank" && <ProcessRankTopicPage />}
           {route.topicId === "collective" && <CollectiveTopicPage />}
+          {route.topicId === "ring-allreduce" && <RingAllReduceTopicPage />}
           {route.topicId === "ddp" && <DDPTopicPage />}
           {route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
           {route.topicId === "fsdp" && <FSDPTopicPage />}

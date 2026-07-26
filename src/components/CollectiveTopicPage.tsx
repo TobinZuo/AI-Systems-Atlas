@@ -37,7 +37,7 @@ export function CollectiveTopicPage() {
       <DistributedSystemStack topic="collective" />
       <CollectivePlayground />
 
-      <section className="project-note collective-project-note"><div><p className="eyebrow">Next connection</p><h2>Collective 的输入输出契约已经清楚，下一步拆开 Ring AllReduce 的逐轮调度。</h2><p>ReduceScatter 和 AllGather 怎样各走 N-1 轮，又怎样让每个 rank 每轮发送不同 chunk。</p></div><a href="#/distributed/ddp">先在 DDP 中查看 Ring<ArrowRight size={17} aria-hidden="true" /></a></section>
+      <section className="project-note collective-project-note"><div><p className="eyebrow">Next connection</p><h2>Collective 的输入输出契约已经清楚，下一步拆开 Ring AllReduce 的逐轮调度。</h2><p>ReduceScatter 和 AllGather 怎样各走 N-1 轮，又怎样让每个 rank 每轮发送不同 chunk。</p></div><a href="#/distributed/ring-allreduce">进入 Ring AllReduce<ArrowRight size={17} aria-hidden="true" /></a></section>
     </main>
   );
 }

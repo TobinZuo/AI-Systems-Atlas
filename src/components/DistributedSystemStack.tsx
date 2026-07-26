@@ -11,6 +11,7 @@ import { scrollToSection } from "./scrollToSection";
 export type DistributedSystemStackTopic =
   | "process-rank"
   | "collective"
+  | "ring-allreduce"
   | "ddp"
   | "zero-1"
   | "fsdp";
@@ -73,6 +74,20 @@ export const distributedSystemStackProfiles: Record<DistributedSystemStackTopic,
       kernel: { action: "NCCL kernel 读取与归约", object: "send pointer / receive pointer", state: "active" },
       memory: { action: "直接读写 Tensor bytes", object: "GPU HBM 中的 send / recv buffer", state: "active" },
       fabric: { action: "按拓扑搬运分块", object: "NVLink / PCIe / RDMA / Socket", state: "active" },
+    },
+  },
+  "ring-allreduce": {
+    question: "每轮 Ring 调度在软硬件各层做了什么？",
+    answer: "框架提交一个 AllReduce，NCCL kernel 在 Comm stream 中持续读取、归约并转发 M/N 大小的分块。",
+    cta: "查看逐轮 Ring 调度",
+    targetId: "ring-round-stage",
+    layers: {
+      framework: { action: "dist.all_reduce(bucket)", object: "输入输出仍是同一块梯度 buffer", state: "active" },
+      process: { action: "每个 Rank 加入同一 communicator", object: "共享 Ring 顺序、count、dtype 与 reduce op", state: "active" },
+      stream: { action: "Collective 排入 Comm stream", object: "用 event 等待 bucket 生产完成", state: "active" },
+      kernel: { action: "NCCL kernel 边收边归约", object: "Reduce、Copy 与 ReduceAndCopy primitives", state: "active" },
+      memory: { action: "按 chunk 读写 HBM buffer", object: "每轮每 Rank 处理约 M/N bytes", state: "active" },
+      fabric: { action: "逻辑 next 边并行传输", object: "Ring 映射到 NVLink / PCIe / RDMA", state: "active" },
     },
   },
   ddp: {
