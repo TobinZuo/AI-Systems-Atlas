@@ -10,41 +10,41 @@ import { motion, useReducedMotion } from "motion/react";
 
 const paths = [
   {
-    title: "Distributed training",
+    title: "分布式训练",
     description:
-      "Trace gradients through DDP, collectives, GPU memory, and interconnects.",
-    status: "Interactive now",
+      "沿着梯度检查 DDP、集合通信、GPU 显存与互连。",
+    status: "当前可交互",
     icon: Graph,
     featured: true,
   },
   {
-    title: "Tensor foundations",
-    description: "See strides, broadcasting, einsum, and automatic differentiation.",
-    status: "Coming next",
+    title: "Tensor 基础",
+    description: "观察 stride、broadcast、einsum 与自动微分。",
+    status: "后续实现",
     icon: BracketsCurly,
   },
   {
-    title: "Transformer anatomy",
-    description: "Open attention, MLP, residual, and normalization paths.",
-    status: "Planned",
+    title: "Transformer 剖面",
+    description: "拆开 attention、MLP、残差与归一化路径。",
+    status: "规划中",
     icon: Stack,
   },
   {
-    title: "Training mechanics",
-    description: "Inspect optimizers, mixed precision, clipping, and checkpoints.",
-    status: "Planned",
+    title: "训练机制",
+    description: "检查 optimizer、混合精度、梯度裁剪与 checkpoint。",
+    status: "规划中",
     icon: CirclesFour,
   },
   {
-    title: "Scaling behavior",
-    description: "Manipulate compute, data, parameters, and performance tradeoffs.",
-    status: "Planned",
+    title: "规模化规律",
+    description: "调整计算量、数据量和参数量，观察性能权衡。",
+    status: "规划中",
     icon: ChartLineUp,
   },
   {
-    title: "Generative models",
-    description: "Explore diffusion, multimodal systems, and generation pipelines.",
-    status: "Planned",
+    title: "生成模型",
+    description: "探索 diffusion、多模态系统与生成流水线。",
+    status: "规划中",
     icon: Atom,
   },
 ];
@@ -55,10 +55,9 @@ export function LearningPaths() {
   return (
     <section className="learning-paths" id="learning-paths">
       <div className="section-copy">
-        <h2>One atlas, multiple scales</h2>
+        <h2>一张 Atlas，覆盖多个系统尺度</h2>
         <p>
-          Start with a concept, then descend through framework, runtime, hardware,
-          memory, and network behavior.
+          从一个概念开始，依次下钻到框架、运行时、硬件、内存和网络行为。
         </p>
       </div>
 

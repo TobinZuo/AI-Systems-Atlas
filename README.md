@@ -17,6 +17,9 @@ loss.backward()
 
 ## What is included
 
+- Concept Mode for deterministic, reversible teaching scenarios
+- Trace Mode with a multi-lane CPU, CUDA Stream, NCCL, NVLink, and HBM timeline
+- Local Chrome Trace / PyTorch Profiler JSON import with X and B/E event support
 - Five synchronized views: system topology, rank/process, GPU internals, Ring collective, and AdamW
 - A rotatable 3D system topology built with React Three Fiber
 - Play, pause, single-step, seek, and speed controls
@@ -44,6 +47,15 @@ Simulation state
       +-- Numeric Ring debugger
       +-- AdamW state transition
       +-- Timeline and causal inspector
+
+Chrome / PyTorch Trace JSON
+      |
+Trace importer and normalization
+      |
+      +-- Process and thread lanes
+      +-- CUDA compute and communication streams
+      +-- Event arguments and overlapping work
+      +-- Links back to Concept Mode
 ```
 
 Important directories:
@@ -53,6 +65,8 @@ src/
   domain/       Shared scenario and event types
   scenarios/    Educational simulations such as DDP
   sim/          Pure timeline, validation, and Ring All-Reduce functions
+  trace/        Chrome Trace parser and category inference
+  traces/       Built-in profiler-style teaching traces
   store/        Playback and selection state
   components/   3D and 2D presentation layers
 ```
@@ -84,6 +98,17 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+## Importing a trace
+
+Open **Trace 分析**, then choose **导入 Trace JSON**. The importer accepts Chrome
+Trace Event JSON, including complete `X` slices and paired `B` / `E` slices.
+PyTorch Profiler exports use this event format. Files are parsed locally in the
+browser and are not uploaded. The current browser importer intentionally limits
+files to 25 MB; trim long captures before importing.
+
+A small reference file is available at
+`public/samples/minimal-pytorch-trace.json`.
 
 ## Adding a scenario
 

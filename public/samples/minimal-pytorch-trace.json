@@ -1,0 +1,60 @@
+{
+  "traceEvents": [
+    {
+      "ph": "M",
+      "name": "process_name",
+      "pid": 100,
+      "tid": 0,
+      "args": { "name": "rank 0" }
+    },
+    {
+      "ph": "M",
+      "name": "thread_name",
+      "pid": 100,
+      "tid": 1,
+      "args": { "name": "Python main thread" }
+    },
+    {
+      "ph": "M",
+      "name": "thread_name",
+      "pid": 100,
+      "tid": 7,
+      "args": { "name": "CUDA communication stream" }
+    },
+    {
+      "ph": "X",
+      "name": "loss.backward()",
+      "cat": "python,framework",
+      "pid": 100,
+      "tid": 1,
+      "ts": 1000000,
+      "dur": 1400,
+      "args": { "rank": 0, "callsite": "train.py:84" }
+    },
+    {
+      "ph": "X",
+      "name": "ncclKernel_AllReduce",
+      "cat": "cuda,collective",
+      "pid": 100,
+      "tid": 7,
+      "ts": 1001600,
+      "dur": 2200,
+      "args": { "rank": 0, "bucket": 0, "dtype": "float32", "op": "SUM" }
+    },
+    {
+      "ph": "B",
+      "name": "multi_tensor_adamw",
+      "cat": "cuda,optimizer",
+      "pid": 100,
+      "tid": 7,
+      "ts": 1004100,
+      "args": { "lr": 0.001 }
+    },
+    {
+      "ph": "E",
+      "pid": 100,
+      "tid": 7,
+      "ts": 1005200
+    }
+  ]
+}
