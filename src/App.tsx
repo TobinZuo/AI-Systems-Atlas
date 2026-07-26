@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { DDPTopicPage } from "./components/DDPTopicPage";
+import { FSDPTopicPage } from "./components/FSDPTopicPage";
 import { HomePage } from "./components/HomePage";
+import { ShardedOptimizerTopicPage } from "./components/ShardedOptimizerTopicPage";
 import { SiteHeader } from "./components/SiteHeader";
 import { parseHash, type AtlasRoute } from "./router";
 
@@ -41,7 +43,7 @@ function App() {
   }, [route]);
 
   const current = route.kind === "topic"
-    ? "ddp"
+    ? route.topicId
     : route.kind === "home"
       ? route.section
       : "other";
@@ -55,7 +57,9 @@ function App() {
       />
 
       {route.kind === "home" && <HomePage />}
-      {route.kind === "topic" && <DDPTopicPage />}
+      {route.kind === "topic" && route.topicId === "ddp" && <DDPTopicPage />}
+      {route.kind === "topic" && route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
+      {route.kind === "topic" && route.topicId === "fsdp" && <FSDPTopicPage />}
       {route.kind === "not-found" && (
         <main className="not-found" id="top">
           <p className="eyebrow">Topic not found</p>

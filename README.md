@@ -16,7 +16,7 @@ The root page currently maps 45 topics across seven domains:
 - Inference systems
 - Generative and multimodal systems
 
-The first complete topic follows one gradient through a four-rank DDP iteration:
+The first topic family follows model state from DDP to ZeRO-1 and FSDP:
 
 ```text
 loss.backward()
@@ -27,13 +27,21 @@ loss.backward()
   -> Ring All-Gather
   -> parameter.grad writeback
   -> optimizer update
+
+DDP
+  -> replicate parameters, gradients, and optimizer state
+ZeRO-1
+  -> shard AdamW state, update on owners, broadcast parameters
+FSDP
+  -> shard parameters, gradients, and optimizer state
+  -> All-Gather one layer for compute, then reshard
 ```
 
 ## What is included
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
 - Hash routes that work directly on GitHub Pages
-- A complete DDP topic at `#/distributed/ddp`
+- Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
 - Concept Mode for deterministic, reversible teaching scenarios
 - Trace Mode with a multi-lane CPU, CUDA Stream, NCCL, NVLink, and HBM timeline
 - Local Chrome Trace / PyTorch Profiler JSON import with X and B/E event support
@@ -105,6 +113,8 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/                    Knowledge map
 #/paths               Cross-topic learning journeys
 #/distributed/ddp     DDP concept playground and trace workspace
+#/distributed/zero-1  Sharded Optimizer ownership and broadcast playground
+#/distributed/fsdp    FSDP parameter lifecycle and memory playground
 ```
 
 Planned topics already live in the catalog. A topic becomes available when it

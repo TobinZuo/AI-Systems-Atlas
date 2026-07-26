@@ -4,6 +4,7 @@ import { SlidersHorizontal } from "@phosphor-icons/react/SlidersHorizontal";
 import { useState } from "react";
 import { AtlasModeBar, type AtlasMode } from "./AtlasModeBar";
 import { DDPPlayground } from "./DDPPlayground";
+import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { TraceWorkspace } from "./TraceWorkspace";
 
 const prerequisiteTopics = ["Gradient", "CUDA Stream", "集合通信", "Ring AllReduce"];
@@ -61,6 +62,7 @@ export function DDPTopicPage() {
         </div>
       </section>
 
+      <DistributedTopicSwitcher current="ddp" />
       <AtlasModeBar mode={mode} onChange={setMode} />
 
       {mode === "concept"

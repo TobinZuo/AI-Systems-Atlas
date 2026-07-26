@@ -9,8 +9,10 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/paths"), { kind: "home", section: "paths" });
   });
 
-  it("routes the existing DDP playground as a topic", () => {
+  it("routes all available distributed playgrounds as topics", () => {
     assert.deepEqual(parseHash("#/distributed/ddp"), { kind: "topic", topicId: "ddp" });
+    assert.deepEqual(parseHash("#/distributed/zero-1"), { kind: "topic", topicId: "zero-1" });
+    assert.deepEqual(parseHash("#/distributed/fsdp"), { kind: "topic", topicId: "fsdp" });
   });
 
   it("preserves unknown paths for the not-found view", () => {

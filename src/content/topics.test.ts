@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { knowledgeDomains, learningJourneys, topicCount, topicIndex } from "./topics";
+import { availableTopicCount, knowledgeDomains, learningJourneys, topicCount, topicIndex } from "./topics";
 
 describe("Knowledge topic catalog", () => {
   it("keeps domains and topics unique", () => {
@@ -32,5 +32,6 @@ describe("Knowledge topic catalog", () => {
     for (const topic of topicIndex.values()) {
       if (topic.status === "available") assert.ok(topic.route);
     }
+    assert.equal(availableTopicCount, 3);
   });
 });

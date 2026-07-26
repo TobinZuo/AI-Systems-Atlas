@@ -3,7 +3,7 @@ import { BookOpen } from "@phosphor-icons/react/BookOpen";
 import { Code } from "@phosphor-icons/react/Code";
 import { MapTrifold } from "@phosphor-icons/react/MapTrifold";
 import { Pulse } from "@phosphor-icons/react/Pulse";
-import { knowledgeDomains, topicCount } from "../content/topics";
+import { availableTopicCount, knowledgeDomains, topicCount } from "../content/topics";
 import { KnowledgeMap } from "./KnowledgeMap";
 import { LearningPaths } from "./LearningPaths";
 
@@ -32,7 +32,7 @@ export function HomePage() {
           <dl className="atlas-stats">
             <div><dt>{knowledgeDomains.length}</dt><dd>知识域</dd></div>
             <div><dt>{topicCount}</dt><dd>主题节点</dd></div>
-            <div><dt>1</dt><dd>可运行专题</dd></div>
+            <div><dt>{availableTopicCount}</dt><dd>可运行专题</dd></div>
           </dl>
         </div>
 

@@ -123,8 +123,8 @@ export const knowledgeDomains: KnowledgeDomain[] = [
       { id: "collective", title: "集合通信", description: "Broadcast、Reduce、Gather 的共同抽象。", status: "next", prerequisites: ["process-rank"] },
       { id: "ring-allreduce", title: "Ring AllReduce", description: "Reduce-Scatter 与 All-Gather 如何拼成归约。", status: "next", prerequisites: ["collective"] },
       { id: "ddp", title: "DDP", description: "复制模型、同步梯度、并行计算。", status: "available", route: "/distributed/ddp", prerequisites: ["gradient", "cuda-stream", "ring-allreduce"] },
-      { id: "zero-1", title: "ZeRO-1", description: "只分片 optimizer state。", status: "next", prerequisites: ["ddp", "adamw"] },
-      { id: "fsdp", title: "FSDP", description: "参数按需 All-Gather，梯度 Reduce-Scatter。", status: "next", prerequisites: ["zero-1", "collective"] },
+      { id: "zero-1", title: "ZeRO-1", description: "只分片 optimizer state。", status: "available", route: "/distributed/zero-1", prerequisites: ["ddp", "adamw"] },
+      { id: "fsdp", title: "FSDP", description: "参数按需 All-Gather，梯度 Reduce-Scatter。", status: "available", route: "/distributed/fsdp", prerequisites: ["zero-1", "collective"] },
       { id: "tensor-parallel", title: "Tensor Parallel", description: "把一个算子的矩阵切到多卡。", status: "mapped", prerequisites: ["collective", "linear"] },
       { id: "pipeline-parallel", title: "Pipeline Parallel", description: "把模型层切成流水线阶段。", status: "mapped", prerequisites: ["transformer", "process-rank"] },
       { id: "expert-parallel", title: "Expert Parallel", description: "MoE expert 如何分布与路由。", status: "mapped", prerequisites: ["collective"] },
@@ -199,6 +199,11 @@ export const learningJourneys: LearningJourney[] = [
 
 export const topicCount = knowledgeDomains.reduce(
   (count, domain) => count + domain.topics.length,
+  0,
+);
+
+export const availableTopicCount = knowledgeDomains.reduce(
+  (count, domain) => count + domain.topics.filter((topic) => topic.status === "available").length,
   0,
 );
 
