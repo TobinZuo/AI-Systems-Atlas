@@ -2,6 +2,7 @@ import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
 import { Network } from "@phosphor-icons/react/Network";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
+import { DistributedSystemStack } from "./DistributedSystemStack";
 import { ProcessRankPlayground } from "./ProcessRankPlayground";
 import { scrollToSection } from "./scrollToSection";
 
@@ -38,6 +39,7 @@ export function ProcessRankTopicPage() {
       </section>
 
       <DistributedTopicSwitcher current="process-rank" />
+      <DistributedSystemStack topic="process-rank" />
       <ProcessRankPlayground />
 
       <section className="project-note rank-project-note">

@@ -7227,6 +7227,175 @@ footer span:first-child {
   gap: 10px;
 }
 
+.distributed-system-stack {
+  width: min(1420px, calc(100% - 48px));
+  margin: 0 auto 40px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 24px 70px -62px var(--shadow);
+}
+
+.distributed-system-stack > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--framework-soft) 20%, var(--surface));
+}
+
+.distributed-system-stack > header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.distributed-system-stack > header span {
+  color: var(--framework);
+  font: 700 0.55rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+.distributed-system-stack > header h2 {
+  margin: 0;
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  letter-spacing: -0.025em;
+}
+
+.distributed-system-stack > header p {
+  max-width: 900px;
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.distributed-system-stack > header button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid var(--framework);
+  border-radius: var(--radius-control);
+  color: var(--framework);
+  background: var(--surface);
+  font-size: 0.62rem;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.distributed-system-stack > header button:hover {
+  background: var(--framework-soft);
+}
+
+.distributed-system-stack > header button:active {
+  transform: translateY(1px);
+}
+
+.distributed-system-stack-scroll {
+  overflow-x: auto;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.distributed-system-layer-track {
+  display: grid;
+  min-width: 1180px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.distributed-system-layer-track article {
+  --system-layer-color: var(--framework);
+  position: relative;
+  display: grid;
+  min-height: 134px;
+  align-content: start;
+  gap: 9px;
+  padding: 16px 20px 17px;
+  border-right: 1px solid var(--line);
+  box-shadow: inset 0 3px var(--system-layer-color);
+}
+
+.distributed-system-layer-track article:last-child {
+  border-right: 0;
+}
+
+.distributed-system-layer-track .system-layer-process {
+  --system-layer-color: var(--optimizer);
+}
+
+.distributed-system-layer-track .system-layer-stream,
+.distributed-system-layer-track .system-layer-fabric {
+  --system-layer-color: var(--network);
+}
+
+.distributed-system-layer-track .system-layer-kernel {
+  --system-layer-color: var(--compute);
+}
+
+.distributed-system-layer-track .system-layer-memory {
+  --system-layer-color: var(--memory);
+}
+
+.distributed-system-layer-track article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.distributed-system-layer-track article > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--system-layer-color);
+  font: 750 0.58rem ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+.distributed-system-layer-track article > div > i {
+  color: var(--text-faint);
+  font-size: 0.48rem;
+  font-style: normal;
+}
+
+.distributed-system-layer-track article > strong {
+  color: var(--text);
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.distributed-system-layer-track article > small {
+  color: var(--text-soft);
+  font-size: 0.54rem;
+  line-height: 1.45;
+}
+
+.distributed-system-layer-track article > b {
+  position: absolute;
+  z-index: 1;
+  top: 65px;
+  right: -7px;
+  width: 13px;
+  height: 13px;
+  border-top: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line-strong);
+  background: var(--surface);
+  transform: rotate(45deg);
+}
+
+.distributed-system-layer-track article.state-ready {
+  background: color-mix(in srgb, var(--system-layer-color) 4%, var(--surface));
+}
+
+.distributed-system-layer-track article.state-deferred {
+  opacity: 0.56;
+  filter: saturate(0.45);
+}
+
 .switcher-topic-wrap {
   gap: 10px;
 }
@@ -8595,6 +8764,7 @@ footer span:first-child {
 
 @media (max-width: 1160px) {
   .distributed-topic-switcher,
+  .distributed-system-stack,
   .distributed-playground {
     width: min(100% - 28px, 1600px);
   }
@@ -8858,6 +9028,20 @@ footer span:first-child {
 
   .distributed-topic-switcher > div {
     overflow-x: auto;
+  }
+
+  .distributed-system-stack {
+    margin-bottom: 28px;
+  }
+
+  .distributed-system-stack > header {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .distributed-system-stack > header button {
+    width: 100%;
   }
 
   .switcher-topic-wrap a {

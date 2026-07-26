@@ -132,7 +132,7 @@ export function DDPSystemStage({
   })();
 
   return (
-    <section className={`ddp-system-stage stage-${step.stage}`} aria-label="GPU 与 Ring 数据流舞台">
+    <section className={`ddp-system-stage stage-${step.stage}`} id="ddp-system-stage" aria-label="GPU 与 Ring 数据流舞台">
       <header className="system-stage-header">
         <div>
           <strong>数据现在在哪，谁正在搬它</strong>

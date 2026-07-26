@@ -4,6 +4,7 @@ import { HardDrives } from "@phosphor-icons/react/HardDrives";
 import { Play } from "@phosphor-icons/react/Play";
 import { useState } from "react";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
+import { DistributedSystemStack } from "./DistributedSystemStack";
 import { FSDPPlayground } from "./FSDPPlayground";
 import { scrollToSection } from "./scrollToSection";
 
@@ -50,6 +51,7 @@ export function FSDPTopicPage() {
       </section>
 
       <DistributedTopicSwitcher current="fsdp" />
+      <DistributedSystemStack topic="fsdp" />
       <FSDPPlayground phaseIndex={phaseIndex} onPhaseIndexChange={setPhaseIndex} />
 
       <section className="project-note distributed-project-note">

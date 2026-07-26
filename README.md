@@ -46,6 +46,7 @@ FSDP
 - An interactive AdamW lab for moment history, bias correction, decoupled weight decay, parameter groups, CUDA execution, and distributed memory ownership
 - An interactive Process and Rank lab for torchrun identities, rendezvous, Process Groups, GPU binding, control-plane failures, and collective data paths
 - An interactive Collective lab comparing nine communication contracts, partial receive buffers, backend call metadata, and rank mismatch failures
+- A shared cross-layer system view from framework and Rank through CUDA Stream, GPU SM, HBM, and the physical interconnect
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race

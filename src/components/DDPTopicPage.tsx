@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AtlasModeBar, type AtlasMode } from "./AtlasModeBar";
 import { DDPPlayground } from "./DDPPlayground";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
+import { DistributedSystemStack } from "./DistributedSystemStack";
 import { TraceWorkspace } from "./TraceWorkspace";
 import { scrollToSection } from "./scrollToSection";
 
@@ -64,6 +65,13 @@ export function DDPTopicPage() {
       </section>
 
       <DistributedTopicSwitcher current="ddp" />
+      <DistributedSystemStack
+        topic="ddp"
+        onDrillDown={() => {
+          setMode("concept");
+          window.requestAnimationFrame(() => scrollToSection("ddp-system-stage"));
+        }}
+      />
       <AtlasModeBar mode={mode} onChange={setMode} />
 
       {mode === "concept"

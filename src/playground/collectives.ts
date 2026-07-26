@@ -168,7 +168,7 @@ function routesFor(config: CollectiveConfig): LogicalCollectiveRoute[] {
 }
 
 function callName(operation: CollectiveOperation): string {
-  return `dist.${operation.replaceAll("-", "_")}`;
+  return `dist.${operation.replace(/-/g, "_")}`;
 }
 
 function pythonCall(config: CollectiveConfig, view: CollectiveRankView): string {
@@ -260,7 +260,7 @@ export function collectiveCallPacket(simulation: CollectiveSimulation, rank: num
       ? "ProcessGroup::barrier"
       : simulation.config.backend === "nccl"
         ? `${backendPrefix}${apiStem}`
-        : `ProcessGroupGloo::${simulation.config.operation.replaceAll("-", "")}`,
+        : `ProcessGroupGloo::${simulation.config.operation.replace(/-/g, "")}`,
     sendPointer: `0x7f20a0${suffix}00`,
     receivePointer: inPlace ? `0x7f20a0${suffix}00` : `0x7f20b0${suffix}00`,
     count: view.count,

@@ -4,6 +4,7 @@ import { HardDrives } from "@phosphor-icons/react/HardDrives";
 import { Play } from "@phosphor-icons/react/Play";
 import { useState } from "react";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
+import { DistributedSystemStack } from "./DistributedSystemStack";
 import { ShardedOptimizerPlayground } from "./ShardedOptimizerPlayground";
 import { scrollToSection } from "./scrollToSection";
 
@@ -50,6 +51,7 @@ export function ShardedOptimizerTopicPage() {
       </section>
 
       <DistributedTopicSwitcher current="zero-1" />
+      <DistributedSystemStack topic="zero-1" />
       <ShardedOptimizerPlayground phaseIndex={phaseIndex} onPhaseIndexChange={setPhaseIndex} />
 
       <section className="project-note distributed-project-note">
