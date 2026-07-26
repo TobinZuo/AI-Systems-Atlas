@@ -1,8 +1,22 @@
 # AI Systems Atlas
 
-An interactive, inspectable map of models, kernels, memory, collectives, and clusters.
+An interactive, inspectable knowledge atlas for large-model and AIGC systems.
 
-The first learning path follows one gradient through a four-rank DDP iteration:
+The site is organized by knowledge topics rather than by a single course. CS336
+assignments, papers, source code, tests, and profiler traces are evidence attached
+to each topic.
+
+The root page currently maps 45 topics across seven domains:
+
+- Data and representation
+- Model architecture
+- Training mechanics
+- GPU and performance
+- Distributed training
+- Inference systems
+- Generative and multimodal systems
+
+The first complete topic follows one gradient through a four-rank DDP iteration:
 
 ```text
 loss.backward()
@@ -17,6 +31,9 @@ loss.backward()
 
 ## What is included
 
+- A topic-based knowledge map with prerequisites and cross-domain learning paths
+- Hash routes that work directly on GitHub Pages
+- A complete DDP topic at `#/distributed/ddp`
 - Concept Mode for deterministic, reversible teaching scenarios
 - Trace Mode with a multi-lane CPU, CUDA Stream, NCCL, NVLink, and HBM timeline
 - Local Chrome Trace / PyTorch Profiler JSON import with X and B/E event support
@@ -35,9 +52,16 @@ loss.backward()
 
 ## Architecture
 
-The simulation model is independent from the rendering layer:
+The topic catalog, executable simulations, and rendering layer are independent:
 
 ```text
+Knowledge domains and topic relationships
+      |
+      +-- Knowledge map
+      +-- Learning journeys
+      +-- Topic routes
+      +-- Evidence metadata
+
 Scenario events
       |
 Simulation state
@@ -62,6 +86,7 @@ Important directories:
 
 ```text
 src/
+  content/      Topic catalog, prerequisites, and learning journeys
   domain/       Shared scenario and event types
   scenarios/    Educational simulations such as DDP
   sim/          Pure timeline, validation, and Ring All-Reduce functions
@@ -72,7 +97,18 @@ src/
 ```
 
 This separation makes it possible to add tokenizer, Transformer, optimizer,
-FSDP, diffusion, and inference paths without rebuilding the player.
+FSDP, diffusion, and inference topics without rebuilding the whole site.
+
+## Site routes
+
+```text
+#/                    Knowledge map
+#/paths               Cross-topic learning journeys
+#/distributed/ddp     DDP concept playground and trace workspace
+```
+
+Planned topics already live in the catalog. A topic becomes available when it
+receives a route and an executable explanation.
 
 ## Local development
 

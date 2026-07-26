@@ -1,77 +1,62 @@
-import { Atom } from "@phosphor-icons/react/Atom";
-import { BracketsCurly } from "@phosphor-icons/react/BracketsCurly";
-import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
-import { CirclesFour } from "@phosphor-icons/react/CirclesFour";
-import { Graph } from "@phosphor-icons/react/Graph";
-import { Stack } from "@phosphor-icons/react/Stack";
-
-const paths = [
-  {
-    title: "分布式训练",
-    description:
-      "沿着梯度检查 DDP、集合通信、GPU 显存与互连。",
-    status: "当前可交互",
-    icon: Graph,
-    featured: true,
-  },
-  {
-    title: "Tensor 基础",
-    description: "观察 stride、broadcast、einsum 与自动微分。",
-    status: "后续实现",
-    icon: BracketsCurly,
-  },
-  {
-    title: "Transformer 剖面",
-    description: "拆开 attention、MLP、残差与归一化路径。",
-    status: "规划中",
-    icon: Stack,
-  },
-  {
-    title: "训练机制",
-    description: "检查 optimizer、混合精度、梯度裁剪与 checkpoint。",
-    status: "规划中",
-    icon: CirclesFour,
-  },
-  {
-    title: "规模化规律",
-    description: "调整计算量、数据量和参数量，观察性能权衡。",
-    status: "规划中",
-    icon: ChartLineUp,
-  },
-  {
-    title: "生成模型",
-    description: "探索 diffusion、多模态系统与生成流水线。",
-    status: "规划中",
-    icon: Atom,
-  },
-];
+import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { CheckCircle } from "@phosphor-icons/react/CheckCircle";
+import { Compass } from "@phosphor-icons/react/Compass";
+import { learningJourneys, topicIndex } from "../content/topics";
 
 export function LearningPaths() {
   return (
-    <section className="learning-paths" id="learning-paths">
-      <div className="section-copy">
-        <h2>一张 Atlas，覆盖多个系统尺度</h2>
-        <p>
-          从一个概念开始，依次下钻到框架、运行时、硬件、内存和网络行为。
-        </p>
+    <section className="learning-journeys" id="learning-paths" aria-labelledby="learning-paths-title">
+      <div className="atlas-section-heading">
+        <div>
+          <p className="eyebrow">Learning paths</p>
+          <h2 id="learning-paths-title">路线不是目录，而是理解问题的顺序。</h2>
+        </div>
+        <p>同一个主题可以出现在多条路线中。你可以跟着梯度、token 或一次推理请求穿过知识地图。</p>
       </div>
 
-      <div className="path-grid">
-        {paths.map((path, index) => {
-          const Icon = path.icon;
+      <div className="journey-list">
+        {learningJourneys.map((journey, journeyIndex) => {
+          const isActive = journey.status === "active";
           return (
-            <article
-              className={path.featured ? "path-card is-featured" : "path-card"}
-              key={path.title}
-            >
-              <div className="path-icon" aria-hidden="true">
-                <Icon size={24} weight="duotone" />
+            <article className={`journey-row${isActive ? " is-active" : ""}`} key={journey.id}>
+              <div className="journey-summary">
+                <div className="journey-number" aria-hidden="true">
+                  {isActive ? <CheckCircle size={22} weight="fill" /> : <Compass size={22} weight="duotone" />}
+                  <span>0{journeyIndex + 1}</span>
+                </div>
+                <p className="eyebrow">{journey.eyebrow}</p>
+                <h3>{journey.title}</h3>
+                <p>{journey.description}</p>
               </div>
-              <div>
-                <h3>{path.title}</h3>
-                <p>{path.description}</p>
+
+              <ol className="journey-steps" aria-label={`${journey.title}的主题顺序`}>
+                {journey.topicIds.map((topicId, index) => {
+                  const topic = topicIndex.get(topicId)!;
+                  const content = (
+                    <>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <strong>{topic.title}</strong>
+                    </>
+                  );
+
+                  return (
+                    <li className={topic.status === "available" ? "is-available" : ""} key={topic.id}>
+                      {topic.route ? <a href={`#${topic.route}`}>{content}</a> : <div>{content}</div>}
+                      {index < journey.topicIds.length - 1 && <ArrowRight size={14} aria-hidden="true" />}
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <div className="journey-state">
+                <span>{isActive ? "已有可交互节点" : "路线已规划"}</span>
+                {isActive && (
+                  <a href="#/distributed/ddp">
+                    从 DDP 开始
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </a>
+                )}
               </div>
-              <span className="path-status">{path.status}</span>
             </article>
           );
         })}
