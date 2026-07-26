@@ -46,7 +46,7 @@ export function DDPTopicPage() {
             <div><span>解决的问题</span><strong>单卡训练太慢</strong></div>
             <div><span>核心方法</span><strong>模型复制 + 梯度同步</strong></div>
             <div><span>关键集合通信</span><strong>AllReduce</strong></div>
-            <div><span>当前实现证据</span><strong>CS336 A2 + Simulator + Trace</strong></div>
+            <div><span>验证方式</span><strong>数值模拟 + System Trace</strong></div>
           </div>
         </div>
 

@@ -13,6 +13,7 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/distributed/ddp"), { kind: "topic", topicId: "ddp" });
     assert.deepEqual(parseHash("#/distributed/zero-1"), { kind: "topic", topicId: "zero-1" });
     assert.deepEqual(parseHash("#/distributed/fsdp"), { kind: "topic", topicId: "fsdp" });
+    assert.deepEqual(parseHash("#/distributed/compare"), { kind: "topic", topicId: "compare" });
   });
 
   it("preserves unknown paths for the not-found view", () => {

@@ -18,7 +18,9 @@ import {
   rowsPerShard,
   type ComputeDtype,
 } from "../playground/fsdp";
+import { fsdpHardwareSnapshot } from "../playground/distributedHardware";
 import { formatBytes } from "../playground/shardedOptimizer";
+import { DistributedHardwarePath } from "./DistributedHardwarePath";
 
 export function FSDPPlayground() {
   const [worldSize, setWorldSize] = useState(2);
@@ -41,6 +43,7 @@ export function FSDPPlayground() {
   const ddpBytes = layerElements * 4 * 4;
   const zeroAverageBytes = layerElements * 4 * 2 + (layerElements * 4 * 2) / worldSize;
   const fsdpPersistentAdamBytes = shardRowCount * layer.columns * 4 * 4;
+  const hardwareSnapshot = fsdpHardwareSnapshot(phase, layer.name, computeDtype);
 
   const changeWorldSize = (nextWorldSize: number) => {
     setWorldSize(nextWorldSize);
@@ -166,6 +169,11 @@ export function FSDPPlayground() {
         </code>
       </div>
 
+      <DistributedHardwarePath
+        snapshot={hardwareSnapshot}
+        title={`${layer.shortName}：当前阶段的软件与硬件路径`}
+      />
+
       <div className="row-tracker">
         <div><span>追踪权重行</span><strong>Row {selectedRow}</strong><small>长期 owner: Rank {selectedRowOwner}</small></div>
         <div className="row-buttons" role="group" aria-label="选择要追踪的权重行">
@@ -275,7 +283,7 @@ export function FSDPPlayground() {
       </section>
 
       <section className="implementation-evidence" aria-labelledby="fsdp-source-title">
-        <div className="evidence-source-heading"><Code size={21} /><div><h3 id="fsdp-source-title">对应 assignment2 实现</h3><code className="source-file-path">cs336_systems/fsdp.py</code></div></div>
+        <div className="evidence-source-heading"><Code size={21} /><div><h3 id="fsdp-source-title">FSDP 实现契约</h3><p>从 shard 生命周期、hook 到 checkpoint 重建的关键机制。</p></div></div>
         <div className="source-contract-grid fsdp-source-grid">
           <article><span>初始化切分</span><code>parameter.data = local_shard</code><p>Linear、Embedding weight 沿第 0 维切分，必要时补零。</p></article>
           <article><span>Forward pre-hook</span><code>self._unshard(state)</code><p>All-Gather 当前层权重，临时切换 parameter.data。</p></article>

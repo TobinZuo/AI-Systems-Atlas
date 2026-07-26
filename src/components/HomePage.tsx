@@ -68,7 +68,7 @@ export function HomePage() {
         <div className="evidence-heading">
           <p className="eyebrow">How a topic is built</p>
           <h2 id="evidence-title">每个专题都回答四层问题。</h2>
-          <p>课程作业只是验证材料之一。真正的组织方式是概念、运行状态、系统轨迹和可复现证据。</p>
+          <p>每个结论都连接到运行状态、系统轨迹和可复现证据，不依赖特定课程的章节顺序。</p>
         </div>
         <ol className="evidence-steps">
           <li>

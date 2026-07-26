@@ -2,9 +2,8 @@
 
 An interactive, inspectable knowledge atlas for large-model and AIGC systems.
 
-The site is organized by knowledge topics rather than by a single course. CS336
-assignments, papers, source code, tests, and profiler traces are evidence attached
-to each topic.
+The site is organized by large-model systems topics.
+Papers, source code, tests, and profiler traces are evidence attached to each topic.
 
 The root page currently maps 45 topics across seven domains:
 
@@ -42,6 +41,7 @@ FSDP
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
 - Hash routes that work directly on GitHub Pages
 - Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
+- A shared DDP, ZeRO-1, and FSDP comparison lab with the same model-size and world-size inputs
 - Concept Mode for deterministic, reversible teaching scenarios
 - Trace Mode with a multi-lane CPU, CUDA Stream, NCCL, NVLink, and HBM timeline
 - Local Chrome Trace / PyTorch Profiler JSON import with X and B/E event support
@@ -115,6 +115,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/distributed/ddp     DDP concept playground and trace workspace
 #/distributed/zero-1  Sharded Optimizer ownership and broadcast playground
 #/distributed/fsdp    FSDP parameter lifecycle and memory playground
+#/distributed/compare Persistent-state, communication, and tradeoff comparison
 ```
 
 Planned topics already live in the catalog. A topic becomes available when it

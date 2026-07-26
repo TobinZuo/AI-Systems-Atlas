@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { DDPTopicPage } from "./components/DDPTopicPage";
+import { DistributedComparisonTopicPage } from "./components/DistributedComparisonTopicPage";
 import { FSDPTopicPage } from "./components/FSDPTopicPage";
 import { HomePage } from "./components/HomePage";
 import { ShardedOptimizerTopicPage } from "./components/ShardedOptimizerTopicPage";
@@ -60,6 +61,7 @@ function App() {
       {route.kind === "topic" && route.topicId === "ddp" && <DDPTopicPage />}
       {route.kind === "topic" && route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
       {route.kind === "topic" && route.topicId === "fsdp" && <FSDPTopicPage />}
+      {route.kind === "topic" && route.topicId === "compare" && <DistributedComparisonTopicPage />}
       {route.kind === "not-found" && (
         <main className="not-found" id="top">
           <p className="eyebrow">Topic not found</p>

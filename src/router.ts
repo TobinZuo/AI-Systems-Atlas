@@ -1,6 +1,6 @@
 export type AtlasRoute =
   | { kind: "home"; section: "atlas" | "paths" }
-  | { kind: "topic"; topicId: "ddp" | "zero-1" | "fsdp" }
+  | { kind: "topic"; topicId: "ddp" | "zero-1" | "fsdp" | "compare" }
   | { kind: "not-found"; path: string };
 
 export function parseHash(hash: string): AtlasRoute {
@@ -11,6 +11,7 @@ export function parseHash(hash: string): AtlasRoute {
   if (path === "/distributed/ddp") return { kind: "topic", topicId: "ddp" };
   if (path === "/distributed/zero-1") return { kind: "topic", topicId: "zero-1" };
   if (path === "/distributed/fsdp") return { kind: "topic", topicId: "fsdp" };
+  if (path === "/distributed/compare") return { kind: "topic", topicId: "compare" };
 
   return { kind: "not-found", path };
 }

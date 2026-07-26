@@ -18,6 +18,8 @@ import {
   shardedOptimizerParameters,
   shardedOptimizerPhases,
 } from "../playground/shardedOptimizer";
+import { shardedOptimizerHardwareSnapshot } from "../playground/distributedHardware";
+import { DistributedHardwarePath } from "./DistributedHardwarePath";
 
 const formatValue = (value: number) => value.toFixed(4);
 
@@ -39,6 +41,14 @@ export function ShardedOptimizerPlayground() {
   const activeBroadcastParameter = phase.kind === "broadcast"
     ? shardedOptimizerParameters[phase.broadcastParameterIndex ?? 0]
     : null;
+  const hardwareParameter = activeBroadcastParameter ?? selectedParameter;
+  const hardwareOwner = ownerForParameter(hardwareParameter.index, worldSize);
+  const hardwareSnapshot = shardedOptimizerHardwareSnapshot(
+    phase,
+    hardwareParameter.name,
+    hardwareOwner,
+    selectedRank,
+  );
 
   const changeWorldSize = (nextWorldSize: number) => {
     setWorldSize(nextWorldSize);
@@ -132,6 +142,11 @@ export function ShardedOptimizerPlayground() {
               : "same collective order on every rank"}
         </code>
       </div>
+
+      <DistributedHardwarePath
+        snapshot={hardwareSnapshot}
+        title={`Rank ${selectedRank}：${hardwareParameter.shortName} 的软件与硬件路径`}
+      />
 
       <div className="parameter-selector" aria-label="选择参数">
         <span>追踪参数</span>
@@ -269,7 +284,7 @@ export function ShardedOptimizerPlayground() {
       </section>
 
       <section className="implementation-evidence" aria-labelledby="zero-source-title">
-        <div className="evidence-source-heading"><Code size={21} /><div><h3 id="zero-source-title">对应 assignment2 实现</h3><code className="source-file-path">cs336_systems/sharded_optimizer.py</code></div></div>
+        <div className="evidence-source-heading"><Code size={21} /><div><h3 id="zero-source-title">Sharded Optimizer 实现契约</h3><p>从状态归属、局部更新到副本一致性的关键机制。</p></div></div>
         <div className="source-contract-grid">
           <article><span>分配 owner</span><code>owner = parameter_index % world_size</code><p>全局 index 跨 parameter group 连续递增。</p></article>
           <article><span>创建本地 optimizer</span><code>optimizer_cls(local_param_groups, **kwargs)</code><p>只把本 rank 拥有的参数交给 AdamW，同时保留每组超参数。</p></article>
