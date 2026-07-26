@@ -1,6 +1,6 @@
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
 
-export type DistributedTopicId = "process-rank" | "ddp" | "zero-1" | "fsdp" | "compare";
+export type DistributedTopicId = "process-rank" | "collective" | "ddp" | "zero-1" | "fsdp" | "compare";
 
 const topics: Array<{
   id: DistributedTopicId;
@@ -9,6 +9,7 @@ const topics: Array<{
   route: string;
 }> = [
   { id: "process-rank", label: "Process / Rank", summary: "建立任务身份与通信组", route: "/distributed/process-rank" },
+  { id: "collective", label: "Collective", summary: "定义跨 Rank 数据契约", route: "/distributed/collective" },
   { id: "ddp", label: "DDP", summary: "复制模型，同步梯度", route: "/distributed/ddp" },
   { id: "zero-1", label: "ZeRO-1", summary: "分片 optimizer state", route: "/distributed/zero-1" },
   { id: "fsdp", label: "FSDP", summary: "分片参数、梯度与状态", route: "/distributed/fsdp" },

@@ -120,7 +120,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     icon: "network",
     topics: [
       { id: "process-rank", title: "Process 与 Rank", description: "从 torchrun、环境变量与 TCPStore 建立任务身份和通信组。", status: "available", route: "/distributed/process-rank" },
-      { id: "collective", title: "集合通信", description: "Broadcast、Reduce、Gather 的共同抽象。", status: "next", prerequisites: ["process-rank"] },
+      { id: "collective", title: "集合通信", description: "用同一组数据比较 Broadcast、Reduce、Gather 与 AllToAll 契约。", status: "available", route: "/distributed/collective", prerequisites: ["process-rank"] },
       { id: "ring-allreduce", title: "Ring AllReduce", description: "Reduce-Scatter 与 All-Gather 如何拼成归约。", status: "next", prerequisites: ["collective"] },
       { id: "ddp", title: "DDP", description: "复制模型、同步梯度、并行计算。", status: "available", route: "/distributed/ddp", prerequisites: ["gradient", "cuda-stream", "ring-allreduce"] },
       { id: "zero-1", title: "ZeRO-1", description: "只分片 optimizer state。", status: "available", route: "/distributed/zero-1", prerequisites: ["ddp", "adamw"] },

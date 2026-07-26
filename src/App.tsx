@@ -7,6 +7,7 @@ const AutogradTopicPage = lazy(() => import("./components/AutogradTopicPage").th
 const AdamWTopicPage = lazy(() => import("./components/AdamWTopicPage").then((module) => ({ default: module.AdamWTopicPage })));
 const CUDAKernelTopicPage = lazy(() => import("./components/CUDAKernelTopicPage").then((module) => ({ default: module.CUDAKernelTopicPage })));
 const CUDAStreamsTopicPage = lazy(() => import("./components/CUDAStreamsTopicPage").then((module) => ({ default: module.CUDAStreamsTopicPage })));
+const CollectiveTopicPage = lazy(() => import("./components/CollectiveTopicPage").then((module) => ({ default: module.CollectiveTopicPage })));
 const DDPTopicPage = lazy(() => import("./components/DDPTopicPage").then((module) => ({ default: module.DDPTopicPage })));
 const DistributedComparisonTopicPage = lazy(() => import("./components/DistributedComparisonTopicPage").then((module) => ({ default: module.DistributedComparisonTopicPage })));
 const FSDPTopicPage = lazy(() => import("./components/FSDPTopicPage").then((module) => ({ default: module.FSDPTopicPage })));
@@ -89,6 +90,7 @@ function App() {
           {route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
           {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}
           {route.topicId === "process-rank" && <ProcessRankTopicPage />}
+          {route.topicId === "collective" && <CollectiveTopicPage />}
           {route.topicId === "ddp" && <DDPTopicPage />}
           {route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
           {route.topicId === "fsdp" && <FSDPTopicPage />}

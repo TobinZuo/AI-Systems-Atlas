@@ -42,7 +42,7 @@ export function ProcessRankTopicPage() {
 
       <section className="project-note rank-project-note">
         <div><p className="eyebrow">Next connection</p><h2>身份与通信组已经建立，下一步研究所有 rank 必须一起调用的 Collective。</h2><p>Broadcast、Reduce、AllReduce 和 AllGather 共享什么抽象，又为什么不能少一个参与者。</p></div>
-        <a href="#/distributed/ddp">先进入 DDP<ArrowRight size={17} aria-hidden="true" /></a>
+        <a href="#/distributed/collective">进入 Collective<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );
