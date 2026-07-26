@@ -41,10 +41,9 @@ export function AutogradTopicPage() {
       <AutogradPlayground />
 
       <section className="project-note autograd-project-note">
-        <div><p className="eyebrow">Next connection</p><h2>梯度写入参数以后，Tensor 运算会继续落到 GPU Kernel。</h2><p>下一步跟着一段梯度数据进入 Grid、Block、Warp、SM、寄存器与 HBM。</p></div>
-        <a href="#/gpu/architecture">进入 GPU 执行模型<ArrowRight size={17} aria-hidden="true" /></a>
+        <div><p className="eyebrow">Next connection</p><h2>Autograd 已经算出局部导数，下一步看这些数怎样成为训练用的梯度。</h2><p>从样本贡献、batch reduction 和 `.grad` buffer，一直连接到参数更新与 DDP。</p></div>
+        <a href="#/training/gradient">进入 Gradient 实验<ArrowRight size={17} aria-hidden="true" /></a>
       </section>
     </main>
   );
 }
-

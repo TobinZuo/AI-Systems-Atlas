@@ -87,7 +87,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     topics: [
       { id: "autograd", title: "Autograd", description: "计算图如何记录、调度并把梯度累加到叶子 Tensor。", status: "available", route: "/training/autograd" },
       { id: "loss", title: "Loss 与 Cross Entropy", description: "预测误差如何变成标量目标。", status: "mapped", prerequisites: ["transformer"] },
-      { id: "gradient", title: "Gradient", description: "参数变化方向从哪里来。", status: "next", prerequisites: ["autograd", "loss"] },
+      { id: "gradient", title: "Gradient", description: "样本导数怎样聚合成参数旁边的 .grad Tensor。", status: "available", route: "/training/gradient", prerequisites: ["autograd", "loss"] },
       { id: "adamw", title: "AdamW", description: "一阶、二阶动量与权重衰减。", status: "next", prerequisites: ["gradient"] },
       { id: "lr-schedule", title: "Learning Rate", description: "学习率为何需要 warmup 与衰减。", status: "mapped", prerequisites: ["adamw"] },
       { id: "gradient-clipping", title: "Gradient Clipping", description: "如何限制异常大的更新。", status: "mapped", prerequisites: ["gradient"] },

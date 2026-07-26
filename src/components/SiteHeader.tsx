@@ -7,7 +7,7 @@ type Theme = "light" | "dark";
 
 interface SiteHeaderProps {
   theme: Theme;
-  current: "atlas" | "paths" | "autograd" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "ddp" | "zero-1" | "fsdp" | "compare" | "other";
+  current: "atlas" | "paths" | "autograd" | "gradient" | "gpu-architecture" | "cuda-kernel" | "cuda-stream" | "ddp" | "zero-1" | "fsdp" | "compare" | "other";
   onToggleTheme: () => void;
 }
 

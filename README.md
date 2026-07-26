@@ -41,6 +41,7 @@ FSDP
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
 - An interactive Autograd lab for dynamic graph recording, saved tensors, reverse scheduling, leaf-gradient accumulation, and version-counter errors
+- An interactive Gradient lab for per-sample derivatives, batch reduction, `.grad` storage, finite-difference checks, optimizer direction, and DDP averaging
 - An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - An interactive Tensor-to-kernel journey through the PyTorch Dispatcher, CUDA launch configuration, and asynchronous error boundaries
 - An interactive CUDA Stream timeline comparing serial execution, safe Event synchronization, and a missing-dependency race
@@ -119,6 +120,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 #/                    Knowledge map
 #/paths               Cross-topic learning journeys
 #/training/autograd   Dynamic graph, backward scheduling, and leaf gradients
+#/training/gradient   Sample contributions, batch reduction, grad buffers, and DDP averaging
 #/gpu/architecture    GPU execution-model and gradient kernel playground
 #/gpu/cuda-kernel     Tensor operator, dispatcher, launch, and error journey
 #/gpu/cuda-stream     CUDA Stream, Event, overlap, and race playground

@@ -9,6 +9,7 @@ const CUDAStreamsTopicPage = lazy(() => import("./components/CUDAStreamsTopicPag
 const DDPTopicPage = lazy(() => import("./components/DDPTopicPage").then((module) => ({ default: module.DDPTopicPage })));
 const DistributedComparisonTopicPage = lazy(() => import("./components/DistributedComparisonTopicPage").then((module) => ({ default: module.DistributedComparisonTopicPage })));
 const FSDPTopicPage = lazy(() => import("./components/FSDPTopicPage").then((module) => ({ default: module.FSDPTopicPage })));
+const GradientTopicPage = lazy(() => import("./components/GradientTopicPage").then((module) => ({ default: module.GradientTopicPage })));
 const GPUArchitectureTopicPage = lazy(() => import("./components/GPUArchitectureTopicPage").then((module) => ({ default: module.GPUArchitectureTopicPage })));
 const ShardedOptimizerTopicPage = lazy(() => import("./components/ShardedOptimizerTopicPage").then((module) => ({ default: module.ShardedOptimizerTopicPage })));
 
@@ -80,6 +81,7 @@ function App() {
       {route.kind === "topic" && (
         <Suspense fallback={<TopicPageSkeleton />}>
           {route.topicId === "autograd" && <AutogradTopicPage />}
+          {route.topicId === "gradient" && <GradientTopicPage />}
           {route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
           {route.topicId === "cuda-kernel" && <CUDAKernelTopicPage />}
           {route.topicId === "cuda-stream" && <CUDAStreamsTopicPage />}

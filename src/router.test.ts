@@ -22,8 +22,9 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/gpu/cuda-stream"), { kind: "topic", topicId: "cuda-stream" });
   });
 
-  it("routes the Autograd playground", () => {
+  it("routes the Autograd and Gradient playgrounds", () => {
     assert.deepEqual(parseHash("#/training/autograd"), { kind: "topic", topicId: "autograd" });
+    assert.deepEqual(parseHash("#/training/gradient"), { kind: "topic", topicId: "gradient" });
   });
 
   it("preserves unknown paths for the not-found view", () => {
