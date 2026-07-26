@@ -6,6 +6,7 @@ import { AtlasModeBar, type AtlasMode } from "./AtlasModeBar";
 import { DDPPlayground } from "./DDPPlayground";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { TraceWorkspace } from "./TraceWorkspace";
+import { scrollToSection } from "./scrollToSection";
 
 const prerequisiteTopics = ["Gradient", "CUDA Stream", "集合通信", "Ring AllReduce"];
 
@@ -55,10 +56,10 @@ export function DDPTopicPage() {
             <ArrowLeft size={16} aria-hidden="true" />
             返回知识地图
           </a>
-          <a className="primary-action" href={mode === "concept" ? "#ddp-playground" : "#trace-workspace"}>
+          <button type="button" className="primary-action" onClick={() => scrollToSection(mode === "concept" ? "ddp-playground" : "trace-workspace")}>
             <SlidersHorizontal size={17} weight="fill" aria-hidden="true" />
             {mode === "concept" ? "开始操作" : "查看时间线"}
-          </a>
+          </button>
         </div>
       </section>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DDPTopicPage } from "./components/DDPTopicPage";
 import { DistributedComparisonTopicPage } from "./components/DistributedComparisonTopicPage";
 import { FSDPTopicPage } from "./components/FSDPTopicPage";
+import { GPUArchitectureTopicPage } from "./components/GPUArchitectureTopicPage";
 import { HomePage } from "./components/HomePage";
 import { ShardedOptimizerTopicPage } from "./components/ShardedOptimizerTopicPage";
 import { SiteHeader } from "./components/SiteHeader";
@@ -58,6 +59,7 @@ function App() {
       />
 
       {route.kind === "home" && <HomePage />}
+      {route.kind === "topic" && route.topicId === "gpu-architecture" && <GPUArchitectureTopicPage />}
       {route.kind === "topic" && route.topicId === "ddp" && <DDPTopicPage />}
       {route.kind === "topic" && route.topicId === "zero-1" && <ShardedOptimizerTopicPage />}
       {route.kind === "topic" && route.topicId === "fsdp" && <FSDPTopicPage />}

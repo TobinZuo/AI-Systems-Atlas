@@ -266,6 +266,10 @@ export function DDPSystemStage({
               <span><b>HBM · bucket[C{focusChunk}]</b><code>{formatVector(focusedState.values)}</code></span>
             </div>
             <p>{focusMessage}</p>
+            <a className="cutaway-deep-link" href="#/gpu/architecture">
+              展开 SM、Warp 与 Lane
+              <ArrowRight size={12} aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>

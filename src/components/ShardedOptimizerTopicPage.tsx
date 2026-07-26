@@ -3,6 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
 import { Play } from "@phosphor-icons/react/Play";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { ShardedOptimizerPlayground } from "./ShardedOptimizerPlayground";
+import { scrollToSection } from "./scrollToSection";
 
 export function ShardedOptimizerTopicPage() {
   return (
@@ -37,7 +38,7 @@ export function ShardedOptimizerTopicPage() {
 
         <div className="topic-hero-actions">
           <a className="back-to-atlas" href="#/"><ArrowLeft size={16} />返回知识地图</a>
-          <a className="primary-action" href="#sharded-optimizer-playground"><Play size={17} weight="fill" />开始逐步执行</a>
+          <button type="button" className="primary-action" onClick={() => scrollToSection("sharded-optimizer-playground")}><Play size={17} weight="fill" aria-hidden="true" />开始逐步执行</button>
         </div>
       </section>
 

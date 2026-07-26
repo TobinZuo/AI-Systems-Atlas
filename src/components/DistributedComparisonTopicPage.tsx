@@ -2,6 +2,7 @@ import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
 import { Play } from "@phosphor-icons/react/Play";
 import { DistributedComparisonPlayground } from "./DistributedComparisonPlayground";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
+import { scrollToSection } from "./scrollToSection";
 
 export function DistributedComparisonTopicPage() {
   return (
@@ -36,7 +37,7 @@ export function DistributedComparisonTopicPage() {
 
         <div className="topic-hero-actions">
           <a className="back-to-atlas" href="#/"><ArrowLeft size={16} />返回知识地图</a>
-          <a className="primary-action" href="#distributed-comparison-playground"><Play size={17} weight="fill" />开始横向对照</a>
+          <button type="button" className="primary-action" onClick={() => scrollToSection("distributed-comparison-playground")}><Play size={17} weight="fill" aria-hidden="true" />开始横向对照</button>
         </div>
       </section>
 

@@ -102,7 +102,7 @@ export const knowledgeDomains: KnowledgeDomain[] = [
     question: "一行 PyTorch 最终在哪里执行？",
     icon: "cpu",
     topics: [
-      { id: "gpu-architecture", title: "GPU、SM 与 Warp", description: "线程怎样分组并占用执行资源。", status: "next" },
+      { id: "gpu-architecture", title: "GPU、SM 与 Warp", description: "用一个梯度 kernel 串起 Grid、Block、SM、Warp、Lane、寄存器与 HBM。", status: "available", route: "/gpu/architecture", prerequisites: ["gradient"] },
       { id: "cuda-kernel", title: "CUDA Kernel", description: "算子如何变成 GPU 上的任务。", status: "next", prerequisites: ["gpu-architecture"] },
       { id: "cuda-stream", title: "CUDA Stream", description: "计算与通信怎样排队和重叠。", status: "next", prerequisites: ["cuda-kernel"] },
       { id: "memory-hierarchy", title: "HBM、SRAM 与 Cache", description: "数据在哪一层以及搬运代价。", status: "next", prerequisites: ["gpu-architecture"] },

@@ -16,6 +16,10 @@ describe("Atlas hash router", () => {
     assert.deepEqual(parseHash("#/distributed/compare"), { kind: "topic", topicId: "compare" });
   });
 
+  it("routes the GPU execution-model playground", () => {
+    assert.deepEqual(parseHash("#/gpu/architecture"), { kind: "topic", topicId: "gpu-architecture" });
+  });
+
   it("preserves unknown paths for the not-found view", () => {
     assert.deepEqual(parseHash("#/model/attention"), { kind: "not-found", path: "/model/attention" });
   });

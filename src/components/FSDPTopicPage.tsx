@@ -3,6 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
 import { Play } from "@phosphor-icons/react/Play";
 import { DistributedTopicSwitcher } from "./DistributedTopicSwitcher";
 import { FSDPPlayground } from "./FSDPPlayground";
+import { scrollToSection } from "./scrollToSection";
 
 export function FSDPTopicPage() {
   return (
@@ -37,7 +38,7 @@ export function FSDPTopicPage() {
 
         <div className="topic-hero-actions">
           <a className="back-to-atlas" href="#/"><ArrowLeft size={16} />返回知识地图</a>
-          <a className="primary-action" href="#fsdp-playground"><Play size={17} weight="fill" />观察参数生命周期</a>
+          <button type="button" className="primary-action" onClick={() => scrollToSection("fsdp-playground")}><Play size={17} weight="fill" aria-hidden="true" />观察参数生命周期</button>
         </div>
       </section>
 

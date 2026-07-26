@@ -39,6 +39,7 @@ FSDP
 ## What is included
 
 - A topic-based knowledge map with prerequisites and cross-domain learning paths
+- An interactive GPU execution-model lab from CPU launch through Grid, Block, SM, Warp, Lane, registers, and HBM
 - Hash routes that work directly on GitHub Pages
 - Complete DDP, ZeRO-1 Sharded Optimizer, and FSDP topics
 - A shared DDP, ZeRO-1, and FSDP comparison lab with the same model-size and world-size inputs
@@ -112,6 +113,7 @@ FSDP, diffusion, and inference topics without rebuilding the whole site.
 ```text
 #/                    Knowledge map
 #/paths               Cross-topic learning journeys
+#/gpu/architecture    GPU execution-model and gradient kernel playground
 #/distributed/ddp     DDP concept playground and trace workspace
 #/distributed/zero-1  Sharded Optimizer ownership and broadcast playground
 #/distributed/fsdp    FSDP parameter lifecycle and memory playground
