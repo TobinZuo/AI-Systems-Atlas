@@ -1,6 +1,6 @@
 # AI Systems Atlas
 
-An interactive map of models, kernels, memory, collectives, and clusters.
+An interactive, inspectable map of models, kernels, memory, collectives, and clusters.
 
 The first learning path follows one gradient through a four-rank DDP iteration:
 
@@ -17,11 +17,14 @@ loss.backward()
 
 ## What is included
 
+- Five synchronized views: system topology, rank/process, GPU internals, Ring collective, and AdamW
 - A rotatable 3D system topology built with React Three Fiber
 - Play, pause, single-step, seek, and speed controls
 - A deterministic DDP event model with explicit dependencies
-- Animated Ring All-Reduce tensor chunks
-- A component inspector that explains role and knowledge boundaries
+- A numeric Ring All-Reduce simulator with per-rank, per-chunk, per-round state
+- Concrete gradient values, send/receive routes, and reduction equations
+- CPU thread, CUDA Stream/Event, HBM address, SM, Block, Warp, and thread-lane drill-downs
+- A causal inspector that explains prerequisites, actions, results, call paths, and misconceptions
 - Responsive light and dark themes
 - Reduced-motion support
 - GitHub Pages deployment workflow
@@ -36,9 +39,11 @@ Scenario events
 Simulation state
       |
       +-- 3D scene
-      +-- Timeline
-      +-- Event explanation
-      +-- Component inspector
+      +-- Rank process and CUDA streams
+      +-- GPU / SM / Warp cutaway
+      +-- Numeric Ring debugger
+      +-- AdamW state transition
+      +-- Timeline and causal inspector
 ```
 
 Important directories:
@@ -47,7 +52,7 @@ Important directories:
 src/
   domain/       Shared scenario and event types
   scenarios/    Educational simulations such as DDP
-  sim/          Pure timeline and validation functions
+  sim/          Pure timeline, validation, and Ring All-Reduce functions
   store/        Playback and selection state
   components/   3D and 2D presentation layers
 ```

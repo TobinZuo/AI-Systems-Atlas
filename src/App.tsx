@@ -6,24 +6,13 @@ import {
   Play,
   Sun,
 } from "@phosphor-icons/react";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { useReducedMotion } from "motion/react";
-import { ComponentRail } from "./components/ComponentRail";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { EventTimeline } from "./components/EventTimeline";
-import { Inspector } from "./components/Inspector";
+import { useEffect, useState } from "react";
+import { DetailedInspector } from "./components/DetailedInspector";
+import { DetailStage } from "./components/DetailStage";
+import { JourneyRail } from "./components/JourneyRail";
 import { LearningPaths } from "./components/LearningPaths";
-import { SceneLoading } from "./components/SceneLoading";
 import { usePlayback } from "./hooks/usePlayback";
-import { ddpScenario } from "./scenarios/ddp";
-import { eventAtTime } from "./sim/simulator";
 import { useSimulationStore } from "./store/simulation";
-
-const SceneCanvas = lazy(() =>
-  import("./components/SceneCanvas").then((module) => ({
-    default: module.SceneCanvas,
-  })),
-);
 
 type Theme = "light" | "dark";
 
@@ -37,14 +26,8 @@ function getInitialTheme(): Theme {
 
 function App() {
   usePlayback();
-  const reducedMotion = Boolean(useReducedMotion());
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
-  const currentTime = useSimulationStore((state) => state.currentTime);
   const play = useSimulationStore((state) => state.play);
-  const activeEvent = useMemo(
-    () => eventAtTime(ddpScenario.events, currentTime),
-    [currentTime],
-  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -61,8 +44,8 @@ function App() {
           <span>AI Systems Atlas</span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#explorer">Explorer</a>
-          <a href="#learning-paths">Learning paths</a>
+          <a href="#explorer">探索器</a>
+          <a href="#learning-paths">学习路径</a>
           <a
             className="github-link"
             href="https://github.com/TobinZuo/AI-Systems-Atlas"
@@ -86,61 +69,38 @@ function App() {
       <main id="top">
         <section className="explorer-intro" id="explorer">
           <div>
-            <p className="eyebrow">Interactive systems model</p>
-            <h1>Follow one gradient through DDP.</h1>
+            <p className="eyebrow">Interactive systems debugger · DDP</p>
+            <h1>跟着一个梯度，走进 AI 系统底层。</h1>
             <p className="intro-copy">
-              Rotate the system, step through each event, and inspect what every
-              layer knows.
+              不只看“GPU 在通信”。逐步检查 Python 进程、CUDA Stream、SM、Warp、HBM、NCCL 与 NVLink 此刻各自做了什么。
             </p>
           </div>
           <button type="button" className="primary-action" onClick={play}>
             <Play size={17} weight="fill" aria-hidden="true" />
-            Start journey
+            从 backward 开始
           </button>
         </section>
 
+        <section className="scenario-contract" aria-label="本次模拟的固定条件">
+          <div><span>并行规模</span><strong>4 ranks / 4 GPUs</strong><small>单机 NVLink Ring</small></div>
+          <div><span>具体梯度</span><strong>8 × fp32 / rank</strong><small>拆成 C0…C3，每块 2 个数</small></div>
+          <div><span>集合通信</span><strong>SUM → ÷ world_size</strong><small>3 轮 Reduce-Scatter + 3 轮 All-Gather</small></div>
+          <div><span>教学目标</span><strong>从语义到字节</strong><small>Framework → Runtime → Kernel → Link</small></div>
+        </section>
+
         <section className="explorer-workspace" aria-label="DDP interactive explorer">
-          <ComponentRail />
-
-          <div className="stage-column">
-            <div className="stage-header">
-              <div>
-                <strong>System view</strong>
-                <span>Drag to orbit. Select a component to inspect it.</span>
-              </div>
-              <div className="stage-context">
-                <span>4 ranks</span>
-                <span>Ring All-Reduce</span>
-              </div>
-            </div>
-            <div className="scene-wrap">
-              <div className="scene-event-label" aria-hidden="true">
-                <span>{activeEvent.layer}</span>
-                <strong>{activeEvent.compactTitle}</strong>
-              </div>
-              <ErrorBoundary>
-                <Suspense fallback={<SceneLoading />}>
-                  <SceneCanvas
-                    event={activeEvent}
-                    reducedMotion={reducedMotion}
-                  />
-                </Suspense>
-              </ErrorBoundary>
-            </div>
-            <EventTimeline />
-          </div>
-
-          <Inspector />
+          <JourneyRail />
+          <DetailStage />
+          <DetailedInspector />
         </section>
 
         <LearningPaths />
 
         <section className="project-note">
           <div>
-            <h2>Built as a simulation, not a video</h2>
+            <h2>它不是一段只能播放的视频。</h2>
             <p>
-              Every visual is derived from structured events, so new models and
-              systems can reuse the same timeline, inspector, and camera.
+              每个数字、chunk 状态和箭头都来自结构化模拟。你可以暂停、逐事件前进，切换观察层级，并验证同一事件在不同系统层看到的事实。
             </p>
           </div>
           <a
@@ -148,7 +108,7 @@ function App() {
             target="_blank"
             rel="noreferrer"
           >
-            Explore the source
+            查看模拟器源码
             <ArrowRight size={17} aria-hidden="true" />
           </a>
         </section>
@@ -156,7 +116,7 @@ function App() {
 
       <footer>
         <span>AI Systems Atlas</span>
-        <span>Models, kernels, memory, and clusters.</span>
+        <span>把模型、Kernel、内存与集群串成一条因果链。</span>
       </footer>
     </div>
   );

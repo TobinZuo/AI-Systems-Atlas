@@ -5,6 +5,7 @@ import {
   Pause,
   Play,
 } from "@phosphor-icons/react";
+import { lessonFor } from "../content/ddpLesson";
 import { ddpScenario } from "../scenarios/ddp";
 import { eventAtTime } from "../sim/simulator";
 import { useSimulationStore } from "../store/simulation";
@@ -30,8 +31,8 @@ export function EventTimeline() {
           type="button"
           className="icon-button"
           onClick={reset}
-          aria-label="Restart simulation"
-          title="Restart"
+          aria-label="重新开始"
+          title="重新开始"
         >
           <ArrowCounterClockwise size={17} />
         </button>
@@ -39,8 +40,8 @@ export function EventTimeline() {
           type="button"
           className="icon-button"
           onClick={stepBackward}
-          aria-label="Previous event"
-          title="Previous event"
+          aria-label="上一个事件"
+          title="上一个事件"
         >
           <CaretLeft size={17} weight="bold" />
         </button>
@@ -48,21 +49,21 @@ export function EventTimeline() {
           type="button"
           className="play-button"
           onClick={toggle}
-          aria-label={isPlaying ? "Pause simulation" : "Play simulation"}
+          aria-label={isPlaying ? "暂停模拟" : "播放模拟"}
         >
           {isPlaying ? (
             <Pause size={18} weight="fill" />
           ) : (
             <Play size={18} weight="fill" />
           )}
-          <span>{isPlaying ? "Pause" : "Play"}</span>
+          <span>{isPlaying ? "暂停" : "播放"}</span>
         </button>
         <button
           type="button"
           className="icon-button"
           onClick={stepForward}
-          aria-label="Next event"
-          title="Next event"
+          aria-label="下一个事件"
+          title="下一个事件"
         >
           <CaretRight size={17} weight="bold" />
         </button>
@@ -70,7 +71,7 @@ export function EventTimeline() {
 
       <div className="timeline-track-wrap">
         <div className="timeline-meta">
-          <strong>{active.compactTitle}</strong>
+          <strong>{lessonFor(active).title}</strong>
           <span>
             {currentTime.toFixed(1)}s / {ddpScenario.totalDuration.toFixed(1)}s
           </span>
@@ -92,12 +93,12 @@ export function EventTimeline() {
           step="0.05"
           value={currentTime}
           onChange={(event) => seek(Number(event.target.value))}
-          aria-label="Simulation time"
+          aria-label="模拟时间"
         />
       </div>
 
       <label className="speed-control">
-        <span>Speed</span>
+        <span>速度</span>
         <select
           value={speed}
           onChange={(event) => setSpeed(Number(event.target.value))}

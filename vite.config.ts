@@ -6,6 +6,6 @@ export default defineConfig({
   base: "/AI-Systems-Atlas/",
   build: {
     target: "es2020",
-    sourcemap: true,
+    sourcemap: false,
   },
 });

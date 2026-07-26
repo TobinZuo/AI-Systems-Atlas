@@ -1,0 +1,191 @@
+import type { SimulationEvent } from "../domain/simulation";
+
+export type DetailView = "overview" | "rank" | "gpu" | "ring" | "optimizer";
+
+export interface EventLesson {
+  title: string;
+  eyebrow: string;
+  summary: string;
+  cause: string;
+  action: string;
+  result: string;
+  view: DetailView;
+  systemIdea: string;
+  misconception: string;
+  callStack: string[];
+}
+
+const lessons: Record<string, EventLesson> = {
+  "python-backward": {
+    title: "4 个独立进程同时进入 backward",
+    eyebrow: "框架入口 · CPU",
+    summary: "每个 rank 都运行一份相同 Python 代码，但读取不同的 mini-batch。",
+    cause: "forward 已经生成 loss，并记录了动态计算图。",
+    action: "Python 调用 C++ Autograd Engine；CPU 不逐元素计算梯度，只负责驱动依赖图。",
+    result: "loss 对应的反向节点进入 ready queue。",
+    view: "rank",
+    systemIdea: "复制模型与进程，把数据切开并行计算。",
+    misconception: "DDP 不是一个 Python 进程控制四张 GPU；常见配置是每张 GPU 对应一个 OS 进程。",
+    callStack: ["train.py", "loss.backward()", "Engine::execute()"],
+  },
+  "autograd-schedules": {
+    title: "Autograd 按依赖关系调度反向算子",
+    eyebrow: "运行时调度 · CPU",
+    summary: "Engine 检查哪些梯度已经齐备，只把 ready 的 backward node 交给工作线程。",
+    cause: "下游节点已经产生 dY，LinearBackward 的输入依赖满足。",
+    action: "CPU 工作线程准备 X、dY 和输出地址，然后调用 ATen/CUDA 实现。",
+    result: "CUDA kernel 被异步压入当前 compute stream。",
+    view: "rank",
+    systemIdea: "用依赖图表达工作，用 ready queue 暴露并行度。",
+    misconception: "计算图记录的是算子和依赖，不是录下每一条机器指令。",
+    callStack: ["Engine::evaluate_function", "MmBackward", "at::mm_out_cuda"],
+  },
+  "gradient-kernel": {
+    title: "GPU 用 Block、Warp 和线程计算 dW",
+    eyebrow: "CUDA 执行 · GPU",
+    summary: "dW = XᵀdY 被切成 tile；Block 被分配到 SM，Warp Scheduler 每拍选择可运行 Warp 发射指令。",
+    cause: "compute stream 队首的 GEMM backward kernel 满足依赖。",
+    action: "线程从 HBM/L2 读取 tile，在寄存器和 shared memory 中复用数据，并用 CUDA Core/Tensor Core 累加。",
+    result: "每个 Block 产出 dW 的一块，最终覆盖完整 weight.grad。",
+    view: "gpu",
+    systemIdea: "分层切分工作：Tensor → Tile → Block → Warp → Thread。",
+    misconception: "GPU 上运行的是 kernel，不是另一个 Python 进程；一个 kernel 由大量线程实例共同执行。",
+    callStack: ["compute stream", "gemm_backward<<<grid, block>>>", "warp MMA / FMA"],
+  },
+  "gradient-writeback": {
+    title: "梯度写入 parameter.grad 对应的显存",
+    eyebrow: "存储层级 · GPU HBM",
+    summary: "计算结果经过寄存器、L1/Shared、L2，最终落入 PyTorch 事先分配的设备内存。",
+    cause: "各线程完成自己负责的输出元素或 tile。",
+    action: "CUDA store 指令写目标 device pointer；缓存系统负责合并与回写。",
+    result: "同一 rank 的 DDP hook 可以观察到这个参数梯度 ready。",
+    view: "gpu",
+    systemIdea: "用存储层级在容量、延迟和带宽之间折中。",
+    misconception: "NCCL 只接收地址作为本地 API 参数；网络真正传输的是该地址指向的张量字节。",
+    callStack: ["register accumulator", "global store", "L2 cache", "HBM: weight.grad"],
+  },
+  "bucket-ready": {
+    title: "DDP Hook 把多个梯度凑成 Bucket",
+    eyebrow: "通信准备 · DDP Reducer",
+    summary: "参数梯度按固定顺序映射进连续 bucket，最后一个相关梯度 ready 后触发集合通信。",
+    cause: "bucket 0 中所有 parameter.grad 都已由 compute stream 写完。",
+    action: "DDP 记录 CUDA Event；comm stream 先 wait event，再 launch NCCL collective。",
+    result: "计算流与通信流建立正确依赖，且后续层反向计算仍可与通信重叠。",
+    view: "rank",
+    systemIdea: "批处理摊薄 launch 成本，用双 Stream 流水化隐藏通信延迟。",
+    misconception: "两个 CUDA Stream 可以并发推进，但有数据依赖时必须通过 Event 显式排序。",
+    callStack: ["AccumulateGrad hook", "Reducer::mark_variable_ready", "ncclAllReduce()"],
+  },
+  "reduce-scatter-0": {
+    title: "Reduce-Scatter 第 1 轮：每个 rank 发送不同 chunk",
+    eyebrow: "Ring All-Reduce · 归约",
+    summary: "rank r 按公式发送 C(r−round) mod N；下一跳收到后，把远端值加到本地同编号 chunk。",
+    cause: "四个 rank 以相同顺序进入同一个 collective。",
+    action: "NCCL kernel 从 send buffer 读数，经 NVLink/PCIe 发送字节，同时对收到的值做逐元素 SUM。",
+    result: "每个在途 chunk 已包含 2/4 个 rank 的贡献。",
+    view: "ring",
+    systemIdea: "用确定性 rank/round 规则实现去中心化协作。",
+    misconception: "不是 rank 0 收齐再分发；四条边同一轮都在并行传输。",
+    callStack: ["comm stream", "ncclKernel_ReduceScatter", "NVLink P2P", "recv + local"],
+  },
+  "reduce-scatter-1": {
+    title: "Reduce-Scatter 第 2 轮：部分和继续向前传",
+    eyebrow: "Ring All-Reduce · 归约",
+    summary: "上一轮收到并累加的 partial sum 在本轮继续发送，而不是重新发送原始梯度。",
+    cause: "同一 channel 的上一轮 send/recv 已完成。",
+    action: "每个 rank 同时执行读、发、收、加、写；网络 copy 与 GPU reduction 形成流水。",
+    result: "当前 partial chunk 已包含 3/4 个 rank 的贡献。",
+    view: "ring",
+    systemIdea: "把大张量分块，让不同链路和计算单元持续工作。",
+    misconception: "NVLink 负责搬运数据，逐元素加法通常由 NCCL 在 GPU 上运行的通信 kernel 完成。",
+    callStack: ["load partial", "send next", "receive previous", "reduce and store"],
+  },
+  "reduce-scatter-2": {
+    title: "Reduce-Scatter 第 3 轮：每个 rank 得到一个完整和",
+    eyebrow: "Ring All-Reduce · 归约完成",
+    summary: "经过 N−1 轮，每个 chunk 恰好访问所有 rank；结果仍是分片的，每个 rank 只负责一个完整 chunk。",
+    cause: "每个 partial chunk 还缺最后一个 rank 的本地贡献。",
+    action: "最后一次 receive + reduce 生成 4/4 contributions 的 SUM。",
+    result: "Rank 0 持有 C1，Rank 1 持有 C2，Rank 2 持有 C3，Rank 3 持有 C0。",
+    view: "ring",
+    systemIdea: "先把归约结果分片，再用复制阶段恢复完整副本。",
+    misconception: "此刻每张 GPU 只有一个有效的完整归约 chunk，还没有完整 all-reduce 结果。",
+    callStack: ["third ring hop", "final local reduction", "one reduced chunk / rank"],
+  },
+  "all-gather-0": {
+    title: "All-Gather 第 1 轮：传播完整 chunk",
+    eyebrow: "Ring All-Reduce · 复制",
+    summary: "每个 rank 把自己持有的完整归约 chunk 发给下一跳，这一阶段不再做 SUM。",
+    cause: "Reduce-Scatter 已经完成，四个完整 chunk 分散在四个 rank。",
+    action: "NCCL 复制收到的 chunk，并为下一轮继续转发。",
+    result: "每个 rank 现在知道 2/4 个完整 chunk。",
+    view: "ring",
+    systemIdea: "用分布式接力完成多播，避免中心节点成为瓶颈。",
+    misconception: "All-Gather 收集的是每个 rank 持有的分片内容，不是只收集长度或地址。",
+    callStack: ["read owned chunk", "send to next rank", "copy into output offset"],
+  },
+  "all-gather-1": {
+    title: "All-Gather 第 2 轮：收到什么，下一轮就转发什么",
+    eyebrow: "Ring All-Reduce · 复制",
+    summary: "rank 与轮数仍唯一决定 chunk；各 rank 无需临时协商，也不会发送相同分片。",
+    cause: "上一轮的新 chunk 已写入本地输出 buffer。",
+    action: "四个 rank 并发把最近收到的 chunk 送往下一跳。",
+    result: "每个 rank 现在知道 3/4 个完整 chunk。",
+    view: "ring",
+    systemIdea: "对称协议减少控制面复杂度。",
+    misconception: "collective 的顺序是调用契约；各 rank 调用次序不一致可能造成等待或死锁。",
+    callStack: ["round schedule", "forward received chunk", "write fixed offset"],
+  },
+  "all-gather-2": {
+    title: "All-Gather 第 3 轮：所有 rank 拼出完整 SUM",
+    eyebrow: "Ring All-Reduce · 完成",
+    summary: "N−1 轮后，每张 GPU 都持有 C0…C3；按原 offset 拼接得到同一条 8 元素梯度。",
+    cause: "每个 rank 只缺最后一个完整 chunk。",
+    action: "最后一次 P2P copy 写入对应 bucket slice。",
+    result: "SUM=[1111,2222,…,8888]，再除 world_size=4 得到平均梯度。",
+    view: "ring",
+    systemIdea: "用集合通信维持复制状态的一致性。",
+    misconception: "通信库不理解 weight.grad 的语义；它只遵守 dtype、元素数量、操作类型和显存指针。",
+    callStack: ["final gather hop", "complete bucket", "optional divide by 4"],
+  },
+  "bucket-writeback": {
+    title: "PyTorch 把同步后的 Bucket 解释回 parameter.grad",
+    eyebrow: "框架接管 · 显存不搬或少搬",
+    summary: "NCCL 已把结果直接写进约定的输出地址；DDP 知道每段 offset 对应哪个参数、shape 和 dtype。",
+    cause: "comm stream 上的 collective kernel 完成。",
+    action: "框架等待 Stream 依赖，并让 grad 成为 bucket view，或按配置把结果复制回 grad storage。",
+    result: "Optimizer 看到每个 parameter.grad 都是全局平均梯度。",
+    view: "rank",
+    systemIdea: "跨层只传最小契约：通信层管 bytes，框架层管语义。",
+    misconception: "通信库不需要知道模型有几层；格式和参数映射保存在 PyTorch/DDP 元数据里。",
+    callStack: ["NCCL writes output pointer", "Reducer finalizes bucket", "parameter.grad view"],
+  },
+  "optimizer-update": {
+    title: "每个 rank 用相同梯度独立执行 AdamW",
+    eyebrow: "状态更新 · GPU",
+    summary: "参数仍然复制在每张 GPU；m、v 等 optimizer state 也各自一份，输入相同所以更新结果相同。",
+    cause: "所有 parameter.grad 已同步，optimizer.step() 被 Python 调用。",
+    action: "CUDA kernel 逐元素更新一阶矩 m、二阶矩 v，做 bias correction，并单独施加 weight decay。",
+    result: "四份模型参数重新一致，可以开始下一批数据。",
+    view: "optimizer",
+    systemIdea: "确定性地重复同一状态转移，避免每步广播全部参数。",
+    misconception: "AdamW 的 weight decay 不混进梯度矩估计；这正是它和 L2 regularization in Adam 的关键区别。",
+    callStack: ["optimizer.step()", "multi_tensor_adamw", "m/v update", "parameter writeback"],
+  },
+  "iteration-complete": {
+    title: "状态边界重新一致，下一轮无需全局锁步",
+    eyebrow: "Iteration boundary",
+    summary: "rank 之间不是每条 CPU 指令都同步；它们只在 collective 顺序和模型状态边界上保持一致。",
+    cause: "本轮 optimizer kernel 完成。",
+    action: "每个进程读取下一份本地 batch，继续异步调度 forward。",
+    result: "复制状态再次换来下一轮数据并行。",
+    view: "overview",
+    systemIdea: "只同步必要状态，把独立计算留给每个副本。",
+    misconception: "step 的墙钟时间通常接近，但慢 rank 会让 collective 中的其他 rank 等待，并非硬件时钟严格对齐。",
+    callStack: ["step returns", "dataloader.next()", "next forward"],
+  },
+};
+
+export function lessonFor(event: SimulationEvent): EventLesson {
+  return lessons[event.id];
+}
